@@ -204,7 +204,7 @@ trait R {
   def switch() {
     for (m <- mirror(this);
          mm <- m.owningMutableProxy) {
-      mm.notifyMorpher()
+      mm.remorph()
     }
   }
 }

@@ -28,7 +28,7 @@ class AdvancedTests {
     }
 
     lightSel = Set((0, 0), (1, 1), (2, 0))
-    tlComp.~.notifyMorpher
+    tlComp.~.remorph
 
     select[Yellow](tlComp.~) match {
       case None => fail()
@@ -36,7 +36,7 @@ class AdvancedTests {
     }
 
     lightSel = Set((0, 0), (1, 0), (2, 1))
-    tlComp.~.notifyMorpher
+    tlComp.~.remorph
     select[Green](tlComp.~) match {
       case None => fail()
       case Some(g) => // OK
@@ -57,14 +57,14 @@ class AdvancedTests {
     }
 
     lightNum = 1
-    tlComp.~.notifyMorpher
+    tlComp.~.remorph
     select[Yellow](tlComp.~) match {
       case None => fail()
       case Some(y) => // OK
     }
 
     lightNum = 2
-    tlComp.~.notifyMorpher
+    tlComp.~.remorph
     select[Green](tlComp.~) match {
       case None => fail()
       case Some(g) => // OK
@@ -395,7 +395,7 @@ class AdvancedTests {
 
     assertTrue(select[A](morph1).isDefined)
     aActive = false
-    morph1.switch() // a method on R invoking 'notifyMorpher' on the mutable proxy obtained through the mirror method
+    morph1.switch() // a method on R invoking 'remorph' on the mutable proxy obtained through the mirror method
     assertFalse(select[A](morph1).isDefined)
   }
 
@@ -429,7 +429,7 @@ class AdvancedTests {
 
     // switch off B with C and activate A
     cActive = false
-    morph1.notifyMorpher
+    morph1.remorph
 
     select[C](morph1) match {
       case None =>

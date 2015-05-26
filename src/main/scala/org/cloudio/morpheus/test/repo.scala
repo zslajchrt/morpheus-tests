@@ -379,7 +379,7 @@ trait Animal {
     addListener(new MutableFragmentListener {
       override def onEvent(eventName: String, eventValue: Any, eventSource: Any): List[CompositeEvent[_]] = {
         if (morphEvent.eventName == eventName) {
-          proxy.notifyMorpher
+          proxy.remorph()
          }
         Nil
       }

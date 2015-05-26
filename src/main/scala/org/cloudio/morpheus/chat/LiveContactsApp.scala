@@ -53,7 +53,7 @@ object LiveContactsApp {
     contactList.online = true
     println(contactList.myAlternative)
     println("Is online: " + contactList.online)
-    //contactList.notifyMorpher()
+    //contactList.remorph()
 
     import contactList._ // there are an implicit conversion needed by the following statement
     contactList.sendMessageToContact("subject", "body")

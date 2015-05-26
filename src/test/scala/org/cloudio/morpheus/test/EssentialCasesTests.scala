@@ -414,13 +414,13 @@ class EssentialCasesTests {
     assertEquals(0, logger.counterLoggerX) // no change, the logger is OFF
 
     logFlag = true
-    proxy.notifyMorpher()
+    proxy.remorph()
 
     proxy.methodX(2)
     assertEquals(1, logger.counterLoggerX) // the counter incremented, the logger is ON
 
     logFlag = false
-    proxy.notifyMorpher()
+    proxy.remorph()
 
     proxy.methodX(3)
     assertEquals(1, logger.counterLoggerX) // no change, the logger is OFF
@@ -447,7 +447,7 @@ class EssentialCasesTests {
     assertEquals("{'id': 100}", out)
 
     printFmt = 'csv
-    morph.notifyMorpher()
+    morph.remorph()
 
     out = morph.print()
     assertEquals("100", out)
@@ -716,7 +716,7 @@ class EssentialCasesTests {
 
     // Switch the strategy to 'right' and re-morph the composite by notifying the proxy
     strategy.switch(1)
-    mutPx.notifyMorpher()
+    mutPx.remorph()
 
     select[Jang](mutPx) match {
       case Some(jang) =>
@@ -766,7 +766,7 @@ class EssentialCasesTests {
 
     // Switch the strategy to 'right' and re-morph the composite by notifying the proxy
     strategy.switch(1)
-    mutPx.notifyMorpher()
+    mutPx.remorph()
 
     select[EntityA with Jang](mutPx) match {
       case Some(jangEnt) =>
@@ -865,7 +865,7 @@ class EssentialCasesTests {
 
     // Switch off the XMLRenderer
     strategy.switch(1)
-    px.notifyMorpher()
+    px.remorph()
 
     assertEquals("0", px.render)
 
@@ -1178,7 +1178,7 @@ class EssentialCasesTests {
 
     // Switch off the XMLRenderer
     defStrat.switch(1)
-    px.notifyMorpher()
+    px.remorph()
 
     assertEquals("0", px.render)
 
@@ -1238,7 +1238,7 @@ class EssentialCasesTests {
     val specCompMut = asCompositeOf_~[EntityB with XMLRenderer](compositeWithAlts)
     // just try to invoke some methods on the proxies
     specCompMut.methodX(1)
-    specCompMut.notifyMorpher
+    specCompMut.remorph
 
     // Should not compile because of the unknown fragment PingLogger
     //asCompositeOf[EntityB with PingLogger](compositeWithAlts)
@@ -1329,7 +1329,7 @@ class EssentialCasesTests {
     assertEquals(2, mm.myAlternative.size)
     assertSame(inst, mm.toCompositeInstance)
     assertNotNull(mm.delegate)
-    mm.notifyMorpher // test it just by calling it
+    mm.remorph // test it just by calling it
   }
 
   @Test

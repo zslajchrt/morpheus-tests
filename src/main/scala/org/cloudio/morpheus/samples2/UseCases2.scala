@@ -174,28 +174,28 @@
 //      isFrag1 = false
 //      isFrag2 = false
 //      isFrag3 = false
-//      composite.notifyMorpher()
+//      composite.remorph()
 //
 //      testComposite(composite, "Test1")
 //
 //      isFrag1 = true
 //      isFrag2 = false
 //      isFrag3 = false
-//      composite.notifyMorpher()
+//      composite.remorph()
 //
 //      testComposite(composite, "Test2")
 //
 //      isFrag1 = true
 //      isFrag2 = true
 //      isFrag3 = false
-//      composite.notifyMorpher()
+//      composite.remorph()
 //
 //      testComposite(composite, "Test3")
 //
 //      isFrag1 = true
 //      isFrag2 = true
 //      isFrag3 = true
-//      composite.notifyMorpher()
+//      composite.remorph()
 //
 //      testComposite(composite, "Test4")
 //    }
