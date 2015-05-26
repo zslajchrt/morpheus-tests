@@ -139,12 +139,12 @@ trait Ping {
   //
   //  def newPing2() = new {
   //    type Model = Ping with \?[PingValidator] with \?[PingLogger]
-  //    implicit val strat: MorpherStrategy[Model] = new LeftAltsMorpherStrategy[Model]
+  //    implicit val strat: MorphingStrategy[Model] = new LeftAltsMorphingStrategy[Model]
   //  }
   //
   //  def newPingTrainer() = new {
   //    type Model = PingTrainer
-  //    implicit val strat = new LeftAltsMorpherStrategy[Model]
+  //    implicit val strat = new LeftAltsMorphingStrategy[Model]
   //  }
 
 }
@@ -250,7 +250,7 @@ trait Pong extends PongConfig {
   //
   //  def newPongTrainer() = new {
   //    type Model = PongTrainer
-  //    implicit val strat = new LeftAltsMorpherStrategy[Model]
+  //    implicit val strat = new LeftAltsMorphingStrategy[Model]
   //  }
 
 }

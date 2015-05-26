@@ -521,28 +521,28 @@ class CompositeMappingTests {
   def testDeref(): Unit = {
     val c0: &[A] = compose[A with B]
     val d0 = *(c0)
-    val d0_x: CompositeInstance[A] = d0
+    val d0_x: MorphKernel[A] = d0
     val p0: A = d0.make
     assertEquals(1, p0.onA(1))
     assertEquals(1, d0.~ onA 1)
 
     val c1: &[A with $[B]] = compose[A]
     val d1 = *(c1, single[B])
-    val d1_x: CompositeInstance[A with B] = d1
+    val d1_x: MorphKernel[A with B] = d1
     val p1: A with B = d1.make
     assertEquals(1, p1.onA(1))
     assertEquals("A", p1.onB("A"))
 
     val c2: &[A or $[B]] = compose[A]
     val d2 = *(c2, single[B])
-    val d2_x: CompositeInstance[A or B] = d2
+    val d2_x: MorphKernel[A or B] = d2
     val p2 = d2.make
     assertEquals(1, asCompositeOf[A](d2).onA(1))
     assertEquals("A", asCompositeOf[B](d2).onB("A"))
 
     val c3: &[A or (B with $[C])] = compose[A or B]
     val d3 = *(c3, single[C])
-    val d3_x: CompositeInstance[A or (B with C)] = *(c3, single[C])
+    val d3_x: MorphKernel[A or (B with C)] = *(c3, single[C])
     val p3 = d3.make
     assertEquals(1, asCompositeOf[A](d3).onA(1))
     val bc: B with C = asCompositeOf[B with C](d3)
@@ -551,7 +551,7 @@ class CompositeMappingTests {
 
     val c4: &[A or (B with $[C]) or $[D1]] = compose[A or B]
     val d4 = *(c4, single[C], single[D1])
-    val d4_x: CompositeInstance[A or (B with C) or D1] = *(c4, single[C], single[D1])
+    val d4_x: MorphKernel[A or (B with C) or D1] = *(c4, single[C], single[D1])
     val p4 = d4.make
     assertEquals(1, asCompositeOf[A](d4).onA(1))
     assertEquals("AA", asCompositeOf[B with C](d4).onC("A"))
@@ -561,19 +561,19 @@ class CompositeMappingTests {
     //val c5: &[A with ({type x <: D})#x] = compose[A with D1]
     val c5: &[A with $[D]] = compose[A with D1]
     val d5 = *(c5, single[D2])
-    val d5_x: CompositeInstance[A with D2] = *(c5, single[D2])
+    val d5_x: MorphKernel[A with D2] = *(c5, single[D2])
     val p5 = d5.make
     assertEquals(9, p5.onD(3)) // there is D2 producing 3 * 3
 
     val c6: &[A with D] = compose[A with D1]
     val d6 = *(c6)
-    val d6_x: CompositeInstance[A with D] = *(c6)
+    val d6_x: MorphKernel[A with D] = *(c6)
     val p6 = d6.make
     assertEquals(6, p6.onD(3)) // there is D1 producing 3 + 3
 
     val c7: &[A with $[D]] = compose[A with D1 with I]
     val d7 = *(c7, single[D2])
-    val d7_x: CompositeInstance[A with D2] = *(c7, single[D2])
+    val d7_x: MorphKernel[A with D2] = *(c7, single[D2])
     val p7 = d7.make
     assertEquals(36, p7.onD(3)) // there is D2.onD is producing 3 * 3, but I.onD changes it to (2*3) * (2*3)) = 36
 

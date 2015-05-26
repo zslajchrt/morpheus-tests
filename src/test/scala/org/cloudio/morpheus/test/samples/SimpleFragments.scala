@@ -100,7 +100,7 @@ trait FailoverD extends D {
       case t: Throwable =>
         //for (m <- mirror(this); mm <- m.owningMutableProxy) mm.switchToOtherThan[D]
         for (m <- mirror(this); mm <- m.owningMutableProxy) {
-          val ci = m.toCompositeInstance
+          val ci = m.toMorphKernel
           mm.findFragmentHolder[D] match {
             case Some(dHolder) =>
               // we do not want the fragment that caused this problem
@@ -290,7 +290,7 @@ trait U {
   def switch(init: Boolean) {
     for (m <- mirror(this);
          mm <- m.owningMutableProxy) {
-      val i = m.toCompositeInstance
+      val i = m.toMorphKernel
 
       if (init) {
         //mm.remorph(i.lookupAlt(i.isFragment[A]))
@@ -314,7 +314,7 @@ trait WPartial {
   this: (A or B) =>
 
   def checkIt(): Unit = {
-    //asCompositeOf[A](mirror(this).get.toCompositeInstance)
+    //asCompositeOf[A](mirror(this).get.toMorphKernel)
   }
 }
 

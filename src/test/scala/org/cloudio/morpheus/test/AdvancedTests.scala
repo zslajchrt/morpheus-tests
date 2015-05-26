@@ -146,9 +146,9 @@ class AdvancedTests {
 
     val slaveRef: &[Red or Green] = masterInst
     val slaveInst = *(slaveRef)
-//    val newSlaveStrategy = new MorpherStrategy[slaveInst.Model] {
+//    val newSlaveStrategy = new MorphingStrategy[slaveInst.Model] {
 //
-//      override def chooseAlternatives(instance: CompositeInstance[slaveInst.Model])(owningMutableProxy: Option[instance.MutableLUB]): Alternatives[slaveInst.Model] = {
+//      override def chooseAlternatives(instance: MorphKernel[slaveInst.Model])(owningMutableProxy: Option[instance.MutableLUB]): Alternatives[slaveInst.Model] = {
 //        val origAlts: Alternatives[slaveInst.Model] = slaveInst.defaultStrategy.chooseAlternatives(instance)(None)
 //        val origRatedAltList = origAlts.toList
 //        val commonRating: Double = origRatedAltList.head._2
@@ -290,7 +290,7 @@ class AdvancedTests {
 
     val comp1 = compose[(D3 or D4 or D1) with FailoverD]
 
-    val morph1 = MorpherStrategy.withGlobalStrategy((inst, alts) => {
+    val morph1 = MorphingStrategy.withGlobalStrategy((inst, alts) => {
       alts.last :: alts.dropRight(1) // (A, B, C) => (C, A, B)
     }) {
       comp1.~
@@ -448,7 +448,7 @@ class AdvancedTests {
     // create an immutable morph
     cActive = true
     val morph2 = comp1.make
-    //val morph2x: CompositeMirror[_, _] = morph2
+    //val morph2x: MorpherMirror[_, _] = morph2
 
     select[C](morph2) match {
       case None => fail()

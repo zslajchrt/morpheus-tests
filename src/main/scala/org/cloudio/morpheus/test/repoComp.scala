@@ -135,7 +135,7 @@ object A {
 //  def red(): Unit = {
 //    for (m <- mirror(this);
 //         mm <- m.owningMutableProxy) {
-//      val ci = m.toCompositeInstance
+//      val ci = m.toMorphKernel
 //      mm.remorph(RatingStrategy(RootStrategy[ci.Model](), hasFragment[R](IncRating)))
 //    }
 //  }
@@ -143,7 +143,7 @@ object A {
 //  def yellow(): Unit = {
 //    for (m <- mirror(this);
 //         mm <- m.owningMutableProxy) {
-//      val ci = m.toCompositeInstance
+//      val ci = m.toMorphKernel
 //      mm.remorph(RatingStrategy(RootStrategy[ci.Model](), hasFragment[Y](IncRating)))
 //    }
 //  }
@@ -151,7 +151,7 @@ object A {
 //  def green(): Unit = {
 //    for (m <- mirror(this);
 //         mm <- m.owningMutableProxy) {
-//      val ci = m.toCompositeInstance
+//      val ci = m.toMorphKernel
 //      mm.remorph(RatingStrategy(RootStrategy[ci.Model](), hasFragment[G](IncRating)))
 //    }
 //  }

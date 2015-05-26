@@ -95,10 +95,10 @@ public class ClassPrinter implements ClassVisitor {
 ////                if (insnNode.getOpcode() == Opcodes.CHECKCAST) {
 ////                    TypeInsnNode tcInsn = (TypeInsnNode) insnNode;
 ////                    if (entityClassName.equals(tcInsn.desc)) {
-//////                        // insert CompositeUtils.entity(this)
+//////                        // insert MorphUtils.entity(this)
 ////                        methodNode.instructions.insertBefore(tcInsn,
 ////                                new MethodInsnNode(Opcodes.INVOKESTATIC,
-////                                        "org/cloudio/morpheus/CompositeUtils",
+////                                        "org/cloudio/morpheus/MorphUtils",
 ////                                        "context",
 ////                                        "(Ljava/lang/Object;)Ljava/lang/Object;"));
 //////                        // remove CHECKCAST entityClass
@@ -176,7 +176,7 @@ public class ClassPrinter implements ClassVisitor {
 //
 //        Object fragB2Proxy = createFragmentProxy(FragmentB2.class, "fragment", new Class[]{Entity1.class, DimA.class}, new Class[]{FragmentB2Config.class}, new Object[]{fragmentB2Config});
 //
-//        CompleteCompositeContext compositeContext = new CompleteCompositeContext(
+//        CompleteMorphContext compositeContext = new CompleteMorphContext(
 //                new Class[]{Entity1.class, DimA.class, FragmentB2.class},
 //                new Object[]{new Entity1(1), fragA2Proxy, fragB2Proxy});
 //        Object compositeProxy = compositeContext.proxy();
@@ -189,7 +189,7 @@ public class ClassPrinter implements ClassVisitor {
 //
 //        Object wrappedFragA2 = FilterChainProxy.apply(fragA2Proxy, FragmentA2.class, wrapperA2Proxy);
 //
-//        compositeContext = new CompleteCompositeContext(
+//        compositeContext = new CompleteMorphContext(
 //                new Class[]{Entity1.class, DimA.class, FragmentB2.class},
 //                        new Object[]{new Entity1(2), wrappedFragA2, fragB2Proxy});
 //        compositeProxy = compositeContext.proxy();
@@ -200,7 +200,7 @@ public class ClassPrinter implements ClassVisitor {
 //
 //        Object wrappedFragB2 = FilterChainProxy.apply(fragB2Proxy, FragmentB2Wrapper.class, wrapperB2Proxy);
 //
-//        compositeContext = new CompleteCompositeContext(
+//        compositeContext = new CompleteMorphContext(
 //                new Class[]{Entity1.class, DimA.class, FragmentB2Wrapper.class},
 //                new Object[]{new Entity1(2), wrappedFragA2, wrappedFragB2});
 //        compositeProxy = compositeContext.proxy();
@@ -220,7 +220,7 @@ public class ClassPrinter implements ClassVisitor {
 //
 //        Object wrappedFragB22 = FilterChainProxy.apply(fragB2Proxy, FragmentB2Wrapper2.class, wrapperB22Proxy);
 //
-//        compositeContext = new CompleteCompositeContext(
+//        compositeContext = new CompleteMorphContext(
 //                new Class[]{Entity1.class, DimA.class, FragmentB2Wrapper2.class},
 //                new Object[]{new Entity1(2), wrappedFragA2, wrappedFragB22});
 //        compositeProxy = compositeContext.proxy();
@@ -228,8 +228,8 @@ public class ClassPrinter implements ClassVisitor {
 //        Hierarchy2$.MODULE$.testComposite("Case 4", (Entity1) compositeProxy);
 //
 //////
-//////        CompositeContextCGLIB wrapperA3Context =
-//////                new CompositeContextCGLIB(new Class[]{DimA.class}, new Class[]{Object.class}, null);
+//////        MorphContextCGLIB wrapperA3Context =
+//////                new MorphContextCGLIB(new Class[]{DimA.class}, new Class[]{Object.class}, null);
 //////        Object wrapperA3Proxy = createFragmentProxy(
 //////                wrapperA3Context,
 //////                DimAWrapper2Wrapper_fragment.class,
@@ -238,8 +238,8 @@ public class ClassPrinter implements ClassVisitor {
 //////
 //////        Object wrappedFragA3 = FilterChainProxy.apply(wrappedFragA2, FragmentA2.class, wrapperA3Proxy);
 //////
-//////        CompositeContextCGLIB wrapperA4Context =
-//////                new CompositeContextCGLIB(new Class[]{DimA.class}, new Class[]{Object.class}, null);
+//////        MorphContextCGLIB wrapperA4Context =
+//////                new MorphContextCGLIB(new Class[]{DimA.class}, new Class[]{Object.class}, null);
 //////        Object wrapperA4Proxy = createFragmentProxy(
 //////                wrapperA4Context,
 //////                DimAWrapper3Wrapper_fragment.class,
@@ -248,7 +248,7 @@ public class ClassPrinter implements ClassVisitor {
 //////
 //////        Object wrappedFragA4 = FilterChainProxy.apply(wrappedFragA3, FragmentA2.class, wrapperA4Proxy);
 ////
-////        compositeContext = new CompositeContextCGLIB(new Class[0],
+////        compositeContext = new MorphContextCGLIB(new Class[0],
 ////                new Class[]{Entity1.class, FragmentA2.class, FragmentB2Wrapper.class},
 ////                new Object[]{new Entity1(2), wrappedFragA2, wrappedFragB2});
 ////        compositeProxy = compositeContext.proxy();
@@ -265,7 +265,7 @@ public class ClassPrinter implements ClassVisitor {
 ////        //Hierarchy2$.MODULE$.testComposite((Entity1) compositeProxy);
 ////
 ////        // indirect morphing is initiated by an event
-//////        CompositeContext morphedComposite = compositeContext.morph("RED");
+//////        MorphContext morphedComposite = compositeContext.morph("RED");
 ////
 //////        System.out.println(compositeProxy.toString());
 //////

@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 import org.morpheus.{wrapper, dimension, fragment}
 import org.morpheus.Morpheus._
-import org.morpheus.{SuperBase, DefaultCompositeStrategy, MutableCompositeMirror}
+import org.morpheus.{SuperBase, DefaultCompositeStrategy, MutableMorpherMirror}
 
 /**
 *

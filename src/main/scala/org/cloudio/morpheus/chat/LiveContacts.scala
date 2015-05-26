@@ -197,11 +197,11 @@ trait MockLiveContactTypes extends ContactTypes with HasPrettyPrintedContact {
   private val idGen = new AtomicLong()
 
   def specToXXX(contact: ContactType): &[OfflineContact] = {
-    contact.toCompositeInstance
+    contact.toMorphKernel
   }
 
   def specToXXY(contact: ContactType): &[/?[OfflineContact with $[({type w = EmailService@dimension @wrapper})#w]]] = {
-    contact.toCompositeInstance
+    contact.toMorphKernel
   }
 
   implicit val conv1 = specToXXX _
@@ -213,7 +213,7 @@ trait MockLiveContactTypes extends ContactTypes with HasPrettyPrintedContact {
 
 
     def isOnline: Boolean = {
-      //val invokingMutableInstance = this.asInstanceOf[CompositeMirror[_, _]].owningMutableProxy.get.asInstanceOf[ContactListState]
+      //val invokingMutableInstance = this.asInstanceOf[MorpherMirror[_, _]].owningMutableProxy.get.asInstanceOf[ContactListState]
       //select[ContactListState](this).get.online
       //invokingMutableInstance.online
       (for (m <- mirror(this);

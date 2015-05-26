@@ -1,6 +1,5 @@
 package org.cloudio.morpheus.test
 
-import com.sun.org.apache.xml.internal.security.transforms.params.InclusiveNamespaces
 import org.morpheus.Morpheus._
 import org.morpheus.Morpher._
 import org.morpheus._
@@ -576,7 +575,7 @@ class EssentialCasesTests {
   @Test
   def testVolatilePolymorphismCollection(): Unit = {
 
-    def movingAnimal(a: MutableCompositeMirror[_, _]): Option[MovingAnimal] = inspect(a) {
+    def movingAnimal(a: MutableMorpherMirror[_, _]): Option[MovingAnimal] = inspect(a) {
       case m: MovingAnimal => Some(m)
       case _ => None
     }
@@ -696,7 +695,7 @@ class EssentialCasesTests {
     val composite = compose[Jin or Jang]
     import composite._
 
-    implicit val strategy = AlternatingMorpherStrategy(left, right)
+    implicit val strategy = AlternatingMorphingStrategy(left, right)
     val mutPx = morph_~
 
     select[Jin](mutPx) match {
@@ -746,7 +745,7 @@ class EssentialCasesTests {
     implicit val cfg1 = external[EntityA](new EntityA(1))
     val composite = compose[EntityA with (Jin or Jang)]
     import composite._
-    implicit val strategy = AlternatingMorpherStrategy(left, right)
+    implicit val strategy = AlternatingMorphingStrategy(left, right)
     val mutPx = morph_~
 
     select[EntityA with Jin](mutPx) match {
@@ -858,7 +857,7 @@ class EssentialCasesTests {
     val composite = compose[EntityB with EntityBRenderer with /?[XMLRenderer]]
     import composite._
 
-    implicit val strategy = AlternatingMorpherStrategy(left, right)
+    implicit val strategy = AlternatingMorphingStrategy(left, right)
     val px = morph_~
 
     assertEquals("<0/>", px.render)
@@ -1167,7 +1166,7 @@ class EssentialCasesTests {
   def testDefaultStrategy(): Unit = {
 
     val model = parse[EntityB with EntityBRenderer with /?[XMLRenderer]](true)
-    val defStrat = AlternatingMorpherStrategy(model.left, model.right)
+    val defStrat = AlternatingMorphingStrategy(model.left, model.right)
     val composite = build(model, false, FactoryProvider, defStrat, Total) // the equivalent to "compose"
     import composite._
 
@@ -1249,7 +1248,7 @@ class EssentialCasesTests {
 
   @Test
   def testPlaceholder(): Unit = {
-    val model: CompositeModel[$[EntityA]] = parse[$[EntityA]](false)
+    val model: MorphModel[$[EntityA]] = parse[$[EntityA]](false)
 
     model.rootNode match {
       case fn@FragmentNode(_, true) =>
@@ -1319,15 +1318,15 @@ class EssentialCasesTests {
     type Comp = EntityB with /?[EntityBRenderer]
     val inst = compose[Comp]
 
-    // CompositeMirror
+    // MorpherMirror
     val m = inst.make
     assertEquals(2, m.myAlternative.size)
-    assertSame(inst, m.toCompositeInstance)
+    assertSame(inst, m.toMorphKernel)
 
-    // MutableCompositeMirror
+    // MutableMorpherMirror
     val mm = inst.make_~
     assertEquals(2, mm.myAlternative.size)
-    assertSame(inst, mm.toCompositeInstance)
+    assertSame(inst, mm.toMorphKernel)
     assertNotNull(mm.delegate)
     mm.remorph // test it just by calling it
   }
