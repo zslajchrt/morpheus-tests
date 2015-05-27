@@ -15,6 +15,38 @@ import org.junit.Test
 class AdvancedTests {
 
   @Test
+  def testRatingStrategyWithImmutableMorph(): Unit = {
+    val tlModel = parse[Red or Yellow or Green](true)
+
+    var lightSel = Set((0, 1), (1, 0), (2, 0))
+    val tlStrategy = rate[Red or Yellow or Green](lightSel)
+    val tlComp = compose(tlModel, tlStrategy)
+
+    var tl = tlComp.!
+
+    select[Red](tl) match {
+      case None => fail()
+      case Some(r) => // OK
+    }
+
+    lightSel = Set((0, 0), (1, 1), (2, 0))
+    tl = tl.remorph
+
+    select[Yellow](tl) match {
+      case None => fail()
+      case Some(y) => // OK
+    }
+
+    lightSel = Set((0, 0), (1, 0), (2, 1))
+    tl = tl.remorph
+
+    select[Green](tl) match {
+      case None => fail()
+      case Some(g) => // OK
+    }
+  }
+
+  @Test
   def testRatingStrategy(): Unit = {
     val tlModel = parse[Red or Yellow or Green](true)
 

@@ -3,8 +3,8 @@ package org.cloudio.morpheus.chat
 import org.morpheus.{dimension, fragment}
 
 /**
- * Created by zslajchrt on 21/03/15.
- */
+* Created by zslajchrt on 21/03/15.
+*/
 class Utils {
 
 }

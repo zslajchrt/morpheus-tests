@@ -197,11 +197,12 @@ trait MockLiveContactTypes extends ContactTypes with HasPrettyPrintedContact {
   private val idGen = new AtomicLong()
 
   def specToXXX(contact: ContactType): &[OfflineContact] = {
-    contact.toMorphKernel
+    //val kernel: MorphKernel[CompositeContactType] {type ConformLevel = MorphModel[CompositeContactType]#ConformLevel; type LUB = MorphModel[CompositeContactType]#LUB} = contact.kernel
+    contact.kernel
   }
 
   def specToXXY(contact: ContactType): &[/?[OfflineContact with $[({type w = EmailService@dimension @wrapper})#w]]] = {
-    contact.toMorphKernel
+    contact.kernel
   }
 
   implicit val conv1 = specToXXX _

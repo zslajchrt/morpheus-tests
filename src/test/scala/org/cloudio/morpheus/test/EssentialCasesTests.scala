@@ -575,7 +575,7 @@ class EssentialCasesTests {
   @Test
   def testVolatilePolymorphismCollection(): Unit = {
 
-    def movingAnimal(a: MutableMorpherMirror[_, _]): Option[MovingAnimal] = inspect(a) {
+    def movingAnimal(a: MutableMorpherMirror[_]): Option[MovingAnimal] = inspect(a) {
       case m: MovingAnimal => Some(m)
       case _ => None
     }
@@ -1321,12 +1321,12 @@ class EssentialCasesTests {
     // MorpherMirror
     val m = inst.make
     assertEquals(2, m.myAlternative.size)
-    assertSame(inst, m.toMorphKernel)
+    assertSame(inst, m.kernel)
 
     // MutableMorpherMirror
     val mm = inst.make_~
     assertEquals(2, mm.myAlternative.size)
-    assertSame(inst, mm.toMorphKernel)
+    assertSame(inst, mm.kernel)
     assertNotNull(mm.delegate)
     mm.remorph // test it just by calling it
   }
