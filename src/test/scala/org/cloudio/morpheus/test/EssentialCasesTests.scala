@@ -13,15 +13,15 @@ import org.junit.Test
 
 class EssentialCasesTests {
 
-  @Test
-  def testEntityOnlyImplicitCreation() {
-
-    val morph: EntityA = compose[EntityA].make
-
-    assertEquals(0, morph.id)
-    assertEquals(1, morph.methodX(1))
-
-  }
+//  @Test
+//  def testEntityOnlyImplicitCreation() {
+//
+//    val morph: EntityA = compose[EntityA].make
+//
+//    assertEquals(0, morph.id)
+//    assertEquals(1, morph.methodX(1))
+//
+//  }
 
   @Test
   def testEntityOnlyExplicitCreation() {
@@ -34,21 +34,21 @@ class EssentialCasesTests {
 
   }
 
-  @Test
-  def testOneWrapperOnEntity() {
-    val model = compose[EntityA with EntityAValidator]
-    val morph: EntityA with EntityAValidator = model.make
-
-    // todo: identify name clashes in fragment variables, no two fragments can have an equally named non-private variable
-    // todo: check that a fragment wrapper directly extends the fragment. This limitation may be removed in the future
-    // todo: check that a fragment does not call any method from the context during the initialization
-
-    assertEquals(0, morph.id)
-    assertEquals(0, morph.counterValidatorX)
-    assertEquals(1, morph.methodX(1))
-    assertEquals(1, morph.counterValidatorX)
-
-  }
+//  @Test
+//  def testOneWrapperOnEntity() {
+//    val model = compose[EntityA with EntityAValidator]
+//    val morph: EntityA with EntityAValidator = model.make
+//
+//    // todo: identify name clashes in fragment variables, no two fragments can have an equally named non-private variable
+//    // todo: check that a fragment wrapper directly extends the fragment. This limitation may be removed in the future
+//    // todo: check that a fragment does not call any method from the context during the initialization
+//
+//    assertEquals(0, morph.id)
+//    assertEquals(0, morph.counterValidatorX)
+//    assertEquals(1, morph.methodX(1))
+//    assertEquals(1, morph.counterValidatorX)
+//
+//  }
 
   @Test
   def testOverridingTemplateMethodOnEntity() {
@@ -67,185 +67,185 @@ class EssentialCasesTests {
 
   }
 
-  @Test
-  def testMoreWrappersOnEntity() {
-    val model = compose[EntityA with EntityAValidator with EntityALogger]
-    val morph: EntityA with EntityAValidator with EntityALogger = model.make
+//  @Test
+//  def testMoreWrappersOnEntity() {
+//    val model = compose[EntityA with EntityAValidator with EntityALogger]
+//    val morph: EntityA with EntityAValidator with EntityALogger = model.make
+//
+//    assertEquals(0, morph.id)
+//    assertEquals(0, morph.counterValidatorX)
+//    assertEquals(0, morph.counterLoggerX)
+//    assertEquals(1, morph.methodX(1))
+//    assertEquals(1, morph.counterValidatorX)
+//    assertEquals(1, morph.counterLoggerX)
+//    assertEquals(1, morph.logLevel)
+//
+//  }
 
-    assertEquals(0, morph.id)
-    assertEquals(0, morph.counterValidatorX)
-    assertEquals(0, morph.counterLoggerX)
-    assertEquals(1, morph.methodX(1))
-    assertEquals(1, morph.counterValidatorX)
-    assertEquals(1, morph.counterLoggerX)
-    assertEquals(1, morph.logLevel)
+//  @Test
+//  def testOneOptionalWrapperOnEntity() {
+//
+//    def assertLoggerStatus(expCounter: Int, morph: EntityA with EntityALogger): Unit = {
+//      assertEquals(0, morph.id)
+//      assertEquals(expCounter - 1, morph.counterLoggerX)
+//      assertEquals(1, morph.methodX(1))
+//      assertEquals(expCounter, morph.counterLoggerX)
+//      assertEquals(1, morph.logLevel)
+//    }
+//
+//    // /? operator is ON by default
+//    val model = singleton[EntityA with /?[EntityALogger]]
+//    import model._
+//
+//    model.make match {
+//      case morph: EntityA with EntityALogger =>
+//        assertLoggerStatus(1, morph)
+//      case _ => fail()
+//    }
+//
+//    // introducing the morph strategy
+//
+//    var logFlag = false // logger is OFF
+//
+//    implicit val morphStrategy = activator(
+//      ?[EntityALogger] { _ => logFlag}
+//    )
+//
+//    // the morpher rules out the logger from the resulting composite
+//
+//    model.morph match {
+//      case morph: EntityA with EntityALogger =>
+//        fail()
+//      case _ =>
+//    }
+//
+//    logFlag = true // logger is ON
+//
+//    // the morpher includes the logger from the resulting composite
+//
+//    model.morph match {
+//      case morph: EntityA with EntityALogger =>
+//        assertLoggerStatus(2, morph)
+//      case _ => fail()
+//    }
+//
+//  }
 
-  }
-
-  @Test
-  def testOneOptionalWrapperOnEntity() {
-
-    def assertLoggerStatus(expCounter: Int, morph: EntityA with EntityALogger): Unit = {
-      assertEquals(0, morph.id)
-      assertEquals(expCounter - 1, morph.counterLoggerX)
-      assertEquals(1, morph.methodX(1))
-      assertEquals(expCounter, morph.counterLoggerX)
-      assertEquals(1, morph.logLevel)
-    }
-
-    // /? operator is ON by default
-    val model = singleton[EntityA with /?[EntityALogger]]
-    import model._
-
-    model.make match {
-      case morph: EntityA with EntityALogger =>
-        assertLoggerStatus(1, morph)
-      case _ => fail()
-    }
-
-    // introducing the morph strategy
-
-    var logFlag = false // logger is OFF
-
-    implicit val morphStrategy = activator(
-      ?[EntityALogger] { _ => logFlag}
-    )
-
-    // the morpher rules out the logger from the resulting composite
-
-    model.morph match {
-      case morph: EntityA with EntityALogger =>
-        fail()
-      case _ =>
-    }
-
-    logFlag = true // logger is ON
-
-    // the morpher includes the logger from the resulting composite
-
-    model.morph match {
-      case morph: EntityA with EntityALogger =>
-        assertLoggerStatus(2, morph)
-      case _ => fail()
-    }
-
-  }
-
-  @Test
-  def testMoreOptionalWrappersOnEntity() {
-
-    // /? operator is ON by default
-    val model = singleton[EntityA with /?[EntityAValidator] with /?[EntityALogger]]
-    import model._
-
-    val validator = fragments.select[FragmentHolder[EntityAValidator]].proxy
-    val logger = fragments.select[FragmentHolder[EntityALogger]].proxy
-
-    def assertCounters(counterValidatorX: Int, counterValidatorY: Int, counterLoggerX: Int, counterLoggerZ: Int) = {
-      assertEquals(counterValidatorX, validator.counterValidatorX)
-      assertEquals(counterValidatorY, validator.counterValidatorY)
-      assertEquals(counterLoggerX, logger.counterLoggerX)
-      assertEquals(counterLoggerZ, logger.counterLoggerZ)
-    }
-
-    model.make match {
-      case morph: EntityA with EntityAValidator with EntityALogger =>
-        assertCounters(0, 0, 0, 0)
-        morph.methodX(0)
-        assertCounters(1, 0, 1, 0)
-        morph.methodY(0)
-        assertCounters(1, 1, 1, 0)
-        morph.methodZ(0)
-        assertCounters(1, 1, 1, 1)
-
-      case _ => fail()
-    }
-
-    var validateFlag = false // validator is OFF
-    var logFlag = false // logger is OFF
-
-    implicit val morphStrategy = activator(
-      ?[EntityAValidator] { _ => validateFlag} orElse
-        ?[EntityALogger] { _ => logFlag}
-    )
-
-    model.morph match {
-      case morph: EntityA with EntityAValidator with EntityALogger =>
-        fail()
-      case morph: EntityA with EntityAValidator =>
-        fail()
-      case morph: EntityA with EntityALogger =>
-        fail()
-      case morph: EntityA =>
-        // no change in counters
-        morph.methodX(0)
-        assertCounters(1, 1, 1, 1)
-        morph.methodY(0)
-        assertCounters(1, 1, 1, 1)
-        morph.methodZ(0)
-        assertCounters(1, 1, 1, 1)
-      // OK
-      case _ =>
-        fail()
-    }
-
-    validateFlag = true
-    logFlag = true
-
-    model.morph match {
-      case morph: EntityA with EntityAValidator with EntityALogger =>
-        morph.methodX(0)
-        assertCounters(2, 1, 2, 1)
-        morph.methodY(0)
-        assertCounters(2, 2, 2, 1)
-        morph.methodZ(0)
-        assertCounters(2, 2, 2, 2)
-      case _ =>
-        fail()
-    }
-
-    validateFlag = true
-    logFlag = false
-
-    model.morph match {
-      case morph: EntityA with EntityAValidator with EntityALogger =>
-        fail()
-      case morph: EntityA with EntityAValidator =>
-        morph.methodX(0)
-        assertCounters(3, 2, 2, 2)
-        morph.methodY(0)
-        assertCounters(3, 3, 2, 2)
-        morph.methodZ(0)
-        assertCounters(3, 3, 2, 2) // no change in the 4-th counter from the logger, which is OFF
-      case morph: EntityA with EntityALogger =>
-        fail()
-      case morph: EntityA =>
-        fail()
-      case _ =>
-        fail()
-    }
-
-    validateFlag = false
-    logFlag = true
-
-    model.morph match {
-      case morph: EntityA with EntityAValidator with EntityALogger =>
-        fail()
-      case morph: EntityA with EntityAValidator =>
-        fail()
-      case morph: EntityA with EntityALogger =>
-        morph.methodX(0)
-        assertCounters(3, 3, 3, 2)
-        morph.methodY(0)
-        assertCounters(3, 3, 3, 2) // no change in the 3-rd counter from the validator, which is OFF
-        morph.methodZ(0)
-        assertCounters(3, 3, 3, 3)
-      case morph: EntityA =>
-        fail()
-      case _ =>
-        fail()
-    }
-  }
+//  @Test
+//  def testMoreOptionalWrappersOnEntity() {
+//
+//    // /? operator is ON by default
+//    val model = singleton[EntityA with /?[EntityAValidator] with /?[EntityALogger]]
+//    import model._
+//
+//    val validator = fragments.select[FragmentHolder[EntityAValidator]].proxy
+//    val logger = fragments.select[FragmentHolder[EntityALogger]].proxy
+//
+//    def assertCounters(counterValidatorX: Int, counterValidatorY: Int, counterLoggerX: Int, counterLoggerZ: Int) = {
+//      assertEquals(counterValidatorX, validator.counterValidatorX)
+//      assertEquals(counterValidatorY, validator.counterValidatorY)
+//      assertEquals(counterLoggerX, logger.counterLoggerX)
+//      assertEquals(counterLoggerZ, logger.counterLoggerZ)
+//    }
+//
+//    model.make match {
+//      case morph: EntityA with EntityAValidator with EntityALogger =>
+//        assertCounters(0, 0, 0, 0)
+//        morph.methodX(0)
+//        assertCounters(1, 0, 1, 0)
+//        morph.methodY(0)
+//        assertCounters(1, 1, 1, 0)
+//        morph.methodZ(0)
+//        assertCounters(1, 1, 1, 1)
+//
+//      case _ => fail()
+//    }
+//
+//    var validateFlag = false // validator is OFF
+//    var logFlag = false // logger is OFF
+//
+//    implicit val morphStrategy = activator(
+//      ?[EntityAValidator] { _ => validateFlag} orElse
+//        ?[EntityALogger] { _ => logFlag}
+//    )
+//
+//    model.morph match {
+//      case morph: EntityA with EntityAValidator with EntityALogger =>
+//        fail()
+//      case morph: EntityA with EntityAValidator =>
+//        fail()
+//      case morph: EntityA with EntityALogger =>
+//        fail()
+//      case morph: EntityA =>
+//        // no change in counters
+//        morph.methodX(0)
+//        assertCounters(1, 1, 1, 1)
+//        morph.methodY(0)
+//        assertCounters(1, 1, 1, 1)
+//        morph.methodZ(0)
+//        assertCounters(1, 1, 1, 1)
+//      // OK
+//      case _ =>
+//        fail()
+//    }
+//
+//    validateFlag = true
+//    logFlag = true
+//
+//    model.morph match {
+//      case morph: EntityA with EntityAValidator with EntityALogger =>
+//        morph.methodX(0)
+//        assertCounters(2, 1, 2, 1)
+//        morph.methodY(0)
+//        assertCounters(2, 2, 2, 1)
+//        morph.methodZ(0)
+//        assertCounters(2, 2, 2, 2)
+//      case _ =>
+//        fail()
+//    }
+//
+//    validateFlag = true
+//    logFlag = false
+//
+//    model.morph match {
+//      case morph: EntityA with EntityAValidator with EntityALogger =>
+//        fail()
+//      case morph: EntityA with EntityAValidator =>
+//        morph.methodX(0)
+//        assertCounters(3, 2, 2, 2)
+//        morph.methodY(0)
+//        assertCounters(3, 3, 2, 2)
+//        morph.methodZ(0)
+//        assertCounters(3, 3, 2, 2) // no change in the 4-th counter from the logger, which is OFF
+//      case morph: EntityA with EntityALogger =>
+//        fail()
+//      case morph: EntityA =>
+//        fail()
+//      case _ =>
+//        fail()
+//    }
+//
+//    validateFlag = false
+//    logFlag = true
+//
+//    model.morph match {
+//      case morph: EntityA with EntityAValidator with EntityALogger =>
+//        fail()
+//      case morph: EntityA with EntityAValidator =>
+//        fail()
+//      case morph: EntityA with EntityALogger =>
+//        morph.methodX(0)
+//        assertCounters(3, 3, 3, 2)
+//        morph.methodY(0)
+//        assertCounters(3, 3, 3, 2) // no change in the 3-rd counter from the validator, which is OFF
+//        morph.methodZ(0)
+//        assertCounters(3, 3, 3, 3)
+//      case morph: EntityA =>
+//        fail()
+//      case _ =>
+//        fail()
+//    }
+//  }
 
   @Test
   def testOneWrapperOnFragment(): Unit = {
@@ -392,39 +392,39 @@ class EssentialCasesTests {
   }
 
 
-  @Test
-  def testMutableProxy() {
-    val model = singleton[EntityA with \?[EntityALogger]]
-    import model._
-
-    // retrieve the fragment instance of the logger
-    val logger = fragments.select[FragmentHolder[EntityALogger]].proxy
-
-    var logFlag = false // logger is OFF
-
-    implicit val morphStrategy = activator(
-      ?[EntityALogger] { _ => logFlag}
-    )
-
-    val proxy = model.morph_~
-
-    assertEquals(0, logger.counterLoggerX)
-    proxy.methodX(1)
-    assertEquals(0, logger.counterLoggerX) // no change, the logger is OFF
-
-    logFlag = true
-    proxy.remorph()
-
-    proxy.methodX(2)
-    assertEquals(1, logger.counterLoggerX) // the counter incremented, the logger is ON
-
-    logFlag = false
-    proxy.remorph()
-
-    proxy.methodX(3)
-    assertEquals(1, logger.counterLoggerX) // no change, the logger is OFF
-
-  }
+//  @Test
+//  def testMutableProxy() {
+//    val model = singleton[EntityA with \?[EntityALogger]]
+//    import model._
+//
+//    // retrieve the fragment instance of the logger
+//    val logger = fragments.select[FragmentHolder[EntityALogger]].proxy
+//
+//    var logFlag = false // logger is OFF
+//
+//    implicit val morphStrategy = activator(
+//      ?[EntityALogger] { _ => logFlag}
+//    )
+//
+//    val proxy = model.morph_~
+//
+//    assertEquals(0, logger.counterLoggerX)
+//    proxy.methodX(1)
+//    assertEquals(0, logger.counterLoggerX) // no change, the logger is OFF
+//
+//    logFlag = true
+//    proxy.remorph()
+//
+//    proxy.methodX(2)
+//    assertEquals(1, logger.counterLoggerX) // the counter incremented, the logger is ON
+//
+//    logFlag = false
+//    proxy.remorph()
+//
+//    proxy.methodX(3)
+//    assertEquals(1, logger.counterLoggerX) // no change, the logger is OFF
+//
+//  }
 
   @Test
   def testAlternativeFragmentsDependentOnEntity(): Unit = {
@@ -452,34 +452,34 @@ class EssentialCasesTests {
     assertEquals("100", out)
   }
 
-  @Test
-  def testSharingFragments() {
-    //val model = compose[EntityA with \?[EntityAValidator] with \?[EntityALogger]]
-    val model1 = {
-      singleton[EntityA with EntityAValidator with EntityALogger]
-    }
-
-    val outerLogger = model1.fragments.select[FragmentHolder[EntityALogger]]
-
-    val model2 = {
-      implicit val logger = external[EntityALogger](outerLogger.proxy)
-      singleton[EntityA with EntityAValidator with EntityALogger]
-    }
-
-    val proxy1: EntityA with EntityAValidator with EntityALogger = model1.make
-    val proxy2: EntityA with EntityAValidator with EntityALogger = model2.make
-
-    proxy1.methodX(1)
-    assertEquals(1, proxy1.counterLoggerX)
-    assertEquals(1, proxy2.counterLoggerX)
-    assertEquals(1, proxy1.counterValidatorX)
-    assertEquals(0, proxy2.counterValidatorX)
-    proxy2.methodX(2)
-    assertEquals(2, proxy1.counterLoggerX)
-    assertEquals(2, proxy2.counterLoggerX)
-    assertEquals(1, proxy1.counterValidatorX)
-    assertEquals(1, proxy2.counterValidatorX)
-  }
+//  @Test
+//  def testSharingFragments() {
+//    //val model = compose[EntityA with \?[EntityAValidator] with \?[EntityALogger]]
+//    val model1 = {
+//      singleton[EntityA with EntityAValidator with EntityALogger]
+//    }
+//
+//    val outerLogger = model1.fragments.select[FragmentHolder[EntityALogger]]
+//
+//    val model2 = {
+//      implicit val logger = external[EntityALogger](outerLogger.proxy)
+//      singleton[EntityA with EntityAValidator with EntityALogger]
+//    }
+//
+//    val proxy1: EntityA with EntityAValidator with EntityALogger = model1.make
+//    val proxy2: EntityA with EntityAValidator with EntityALogger = model2.make
+//
+//    proxy1.methodX(1)
+//    assertEquals(1, proxy1.counterLoggerX)
+//    assertEquals(1, proxy2.counterLoggerX)
+//    assertEquals(1, proxy1.counterValidatorX)
+//    assertEquals(0, proxy2.counterValidatorX)
+//    proxy2.methodX(2)
+//    assertEquals(2, proxy1.counterLoggerX)
+//    assertEquals(2, proxy2.counterLoggerX)
+//    assertEquals(1, proxy1.counterValidatorX)
+//    assertEquals(1, proxy2.counterValidatorX)
+//  }
 
 
   @Test
@@ -575,7 +575,7 @@ class EssentialCasesTests {
   @Test
   def testVolatilePolymorphismCollection(): Unit = {
 
-    def movingAnimal(a: MutableMorpherMirror[_]): Option[MovingAnimal] = inspect(a) {
+    def movingAnimal(a: MutableMorphMirror[_]): Option[MovingAnimal] = inspect(a) {
       case m: MovingAnimal => Some(m)
       case _ => None
     }
@@ -1318,12 +1318,12 @@ class EssentialCasesTests {
     type Comp = EntityB with /?[EntityBRenderer]
     val inst = compose[Comp]
 
-    // MorpherMirror
+    // MorphMirror
     val m = inst.make
     assertEquals(2, m.myAlternative.size)
     assertSame(inst, m.kernel)
 
-    // MutableMorpherMirror
+    // MutableMorphMirror
     val mm = inst.make_~
     assertEquals(2, mm.myAlternative.size)
     assertSame(inst, mm.kernel)

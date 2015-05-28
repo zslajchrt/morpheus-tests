@@ -480,7 +480,7 @@ class AdvancedTests {
     // create an immutable morph
     cActive = true
     val morph2 = comp1.make
-    //val morph2x: MorpherMirror[_, _] = morph2
+    //val morph2x: MorphMirror[_, _] = morph2
 
     select[C](morph2) match {
       case None => fail()

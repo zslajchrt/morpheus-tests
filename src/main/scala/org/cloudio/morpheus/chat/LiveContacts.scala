@@ -214,7 +214,7 @@ trait MockLiveContactTypes extends ContactTypes with HasPrettyPrintedContact {
 
 
     def isOnline: Boolean = {
-      //val invokingMutableInstance = this.asInstanceOf[MorpherMirror[_, _]].owningMutableProxy.get.asInstanceOf[ContactListState]
+      //val invokingMutableInstance = this.asInstanceOf[MorphMirror[_, _]].owningMutableProxy.get.asInstanceOf[ContactListState]
       //select[ContactListState](this).get.online
       //invokingMutableInstance.online
       (for (m <- mirror(this);

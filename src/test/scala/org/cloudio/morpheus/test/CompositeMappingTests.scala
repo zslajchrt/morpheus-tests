@@ -158,7 +158,7 @@ class CompositeMappingTests {
     // test dimension in the ref
     val c4: &[A with D] = compose[A with D1]
     assertEquals(AltMappings(
-      Map(0 -> 0),
+      Map(0 -> 0, 1 -> 1),
       Map(List(0, 1) -> List(OrigAlt(List(0, 1), List(OriginalInstanceSource(FragmentNode(0, false)), OriginalInstanceSource(FragmentNode(1, false))))))),
       c4.altMappings)
 
@@ -302,6 +302,13 @@ class CompositeMappingTests {
   def testBasicNonOptionalWithPlaceholder(): Unit = {
     // should not compile
     //val err1: &[A with $[E]] = compose[A]
+
+    val b = singleton[B].!
+    b.y = 1
+    val c0: &[$[B]] = b.kernel
+    val b2kernel = *(c0, single[B])
+    val b2 = b2kernel.!
+    assertEquals(0, b2.y) // the new B instance has y = 0
 
     // B is a free placeholder, i.e. no interference with source composite
     val c1: &[A with $[B]] = compose[A]
@@ -491,7 +498,7 @@ class CompositeMappingTests {
     // the composite does not guarantee the satisfaction of dependencies of a dimension implementation
     val c1: &[$[D]] = compose[D1 with G]
     assertEquals(AltMappings(
-      Map(),
+      Map(0 -> 0),
       Map(List(0) -> List(OrigAlt(List(0, 1), List(PlaceholderSource(FragmentNode(0, true)), OriginalInstanceSource(FragmentNode(1, false))))))),
       c1.altMappings)
 
@@ -501,7 +508,7 @@ class CompositeMappingTests {
 
     val c2: &[A with $[D]] = compose[A with D1]
     assertEquals(AltMappings(
-      Map(0 -> 0),
+      Map(0 -> 0, 1 -> 1),
       Map(List(0, 1) -> List(OrigAlt(List(0, 1), List(OriginalInstanceSource(FragmentNode(0, false)), PlaceholderSource(FragmentNode(1, true))))))),
       c2.altMappings)
 
