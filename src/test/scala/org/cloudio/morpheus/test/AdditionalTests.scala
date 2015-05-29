@@ -12,7 +12,6 @@ import org.junit.Assert._
  */
 class AdditionalTests {
 
-
     @Test
     def testCompleteOneAlternative(): Unit = {
       val ref1: &[C with D] = compose[A with B with C with D1 with I]

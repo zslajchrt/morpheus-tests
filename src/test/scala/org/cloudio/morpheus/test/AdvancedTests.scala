@@ -22,6 +22,7 @@ class AdvancedTests {
     val tlStrategy = rate[Red or Yellow or Green](lightSel)
     val tlComp = compose(tlModel, tlStrategy)
 
+
     var tl = tlComp.!
 
     select[Red](tl) match {

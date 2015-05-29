@@ -281,7 +281,7 @@ trait ContactsMessenger {
       val blended = *(contactRef, myEmailService)
       val m = blended.make_~
       println(m.myAlternative)
-      Some(asCompositeOf[OfflineContact](blended))
+      Some(asMorphOf[OfflineContact](blended))
       val s = select[OfflineContact](m)
       s
     }

@@ -544,15 +544,15 @@ class CompositeMappingTests {
     val d2 = *(c2, single[B])
     val d2_x: MorphKernel[A or B] = d2
     val p2 = d2.make
-    assertEquals(1, asCompositeOf[A](d2).onA(1))
-    assertEquals("A", asCompositeOf[B](d2).onB("A"))
+    assertEquals(1, asMorphOf[A](d2).onA(1))
+    assertEquals("A", asMorphOf[B](d2).onB("A"))
 
     val c3: &[A or (B with $[C])] = compose[A or B]
     val d3 = *(c3, single[C])
     val d3_x: MorphKernel[A or (B with C)] = *(c3, single[C])
     val p3 = d3.make
-    assertEquals(1, asCompositeOf[A](d3).onA(1))
-    val bc: B with C = asCompositeOf[B with C](d3)
+    assertEquals(1, asMorphOf[A](d3).onA(1))
+    val bc: B with C = asMorphOf[B with C](d3)
     assertEquals("A", bc.onB("A"))
     assertEquals("AA", bc.onC("A"))
 
@@ -560,9 +560,9 @@ class CompositeMappingTests {
     val d4 = *(c4, single[C], single[D1])
     val d4_x: MorphKernel[A or (B with C) or D1] = *(c4, single[C], single[D1])
     val p4 = d4.make
-    assertEquals(1, asCompositeOf[A](d4).onA(1))
-    assertEquals("AA", asCompositeOf[B with C](d4).onC("A"))
-    assertEquals(6, asCompositeOf[D1](d4).onD(3))
+    assertEquals(1, asMorphOf[A](d4).onA(1))
+    assertEquals("AA", asMorphOf[B with C](d4).onC("A"))
+    assertEquals(6, asMorphOf[D1](d4).onD(3))
 
     // it's a kind of generic ...
     //val c5: &[A with ({type x <: D})#x] = compose[A with D1]

@@ -314,7 +314,7 @@ trait WPartial {
   this: (A or B) =>
 
   def checkIt(): Unit = {
-    //asCompositeOf[A](mirror(this).get.kernel)
+    //asMorphOf[A](mirror(this).get.kernel)
   }
 }
 

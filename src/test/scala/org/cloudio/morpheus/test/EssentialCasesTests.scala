@@ -741,6 +741,25 @@ class EssentialCasesTests {
   }
 
   @Test
+  def testSelectHiddenFragment(): Unit = {
+    val kernel = compose[D1 with F]
+    val morph = kernel.!
+    val morphNarrowed = asMorphOf[F](morph)
+    // selecting the visible fragment F
+    select[F](morphNarrowed) match {
+      case None => fail()
+      case Some(f) => // OK
+    }
+    // selecting the invisible fragment D1
+    select[D1](morphNarrowed) match {
+      case None => fail()
+      case Some(d1) => // OK
+    }
+  }
+
+
+
+  @Test
   def testSelectWithEntity(): Unit = {
     implicit val cfg1 = external[EntityA](new EntityA(1))
     val composite = compose[EntityA with (Jin or Jang)]
@@ -1225,25 +1244,25 @@ class EssentialCasesTests {
   }
 
   /**
-   * This is a more concise version (using the asCompositeOf macro) of testUsingRefToSpecializeComposite
+   * This is a more concise version (using the asMorphOf macro) of testUsingRefToSpecializeComposite
    */
   @Test
   def testAsCompositeOf(): Unit = {
     val compositeWithAlts = compose[EntityB with EntityBRenderer with /?[EntityBRendererDecorator] with /?[XMLRenderer]]
-    val specComp = asCompositeOf[EntityB with XMLRenderer](compositeWithAlts)
+    val specComp = asMorphOf[EntityB with XMLRenderer](compositeWithAlts)
     // just try to invoke some methods on the proxies
     specComp.methodX(1)
 
-    val specCompMut = asCompositeOf_~[EntityB with XMLRenderer](compositeWithAlts)
+    val specCompMut = asMorphOf_~[EntityB with XMLRenderer](compositeWithAlts)
     // just try to invoke some methods on the proxies
     specCompMut.methodX(1)
     specCompMut.remorph
 
     // Should not compile because of the unknown fragment PingLogger
-    //asCompositeOf[EntityB with PingLogger](compositeWithAlts)
+    //asMorphOf[EntityB with PingLogger](compositeWithAlts)
 
     // Should not compile because of the LUB is not same as the composite type (there are two alternatives)
-    //asCompositeOf[EntityB with /?[XMLRenderer]](compositeWithAlts)
+    //asMorphOf[EntityB with /?[XMLRenderer]](compositeWithAlts)
   }
 
   @Test
