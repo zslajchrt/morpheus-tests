@@ -28,6 +28,7 @@ trait B {
   def onB2(y: Int) = y + y
 }
 
+
 @fragment
 trait C {
   this: B =>
@@ -332,9 +333,11 @@ trait Red {
 trait Yellow {
 }
 
+
 @fragment
 trait Green {
 }
+
 
 case class Player(name: String, origin: String)
 
@@ -356,6 +359,7 @@ trait DummyPingMan extends PingMan {
 
 trait RealPingManConfig {
   val pingPlayer: Player
+
 }
 
 case class RealPingManCfg(pingPlayer: Player) extends RealPingManConfig
