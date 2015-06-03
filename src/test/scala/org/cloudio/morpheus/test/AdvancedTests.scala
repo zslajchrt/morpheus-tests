@@ -116,12 +116,15 @@ class AdvancedTests {
     val morphEvent = CompositeEvent("morphLight2", null, null)
     val activeLight2 = EventMonitor[Int]("activeLight2", morphEvent)
     val slaveRef: &[(Red or $[Yellow] or Green) with $[MutableFragment]] = masterInst
-    val slaveStrategy = promote[Red or Yellow or Green](rootStrategy(slaveRef), activeLight2)
     val placehld = (single[Yellow], mutableFragment(activeLight2))
+    val slaveRootStrategy = rootStrategy(slaveRef)
+    val slaveStrategy = promote[Red or Yellow or Green](slaveRootStrategy, activeLight2)
+
     val slaveInst = *(slaveRef, slaveStrategy, placehld)
     val slave = slaveInst.~
     val isSlaveListening = slave.startListening(morphEvent.nameSelector)
     slave.fire("activeLight2", 0, null)
+
 
     select[Red](slave) match {
       case Some(s) => //OK
