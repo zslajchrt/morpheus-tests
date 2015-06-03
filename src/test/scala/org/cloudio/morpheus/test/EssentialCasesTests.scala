@@ -1125,50 +1125,50 @@ class EssentialCasesTests {
     val nodepsCheckCompRef: &?[EntityBRenderer with EntityBRendererDecorator with XMLRenderer] = incompleteComp
   }
 
-  @Test
-  def testExclusiveReference(): Unit = {
-    val c = compose[(A with B) or D1]
-    val cr: &[A or D] = c
-    val m = *(cr).~
-    m.remorph(RatingStrategy(m.strategy, hasFragment[A](IncRating)))
-    assertTrue(select[A](m).isDefined)
-    m.remorph(RatingStrategy(m.strategy, hasFragment[A](DecRating), hasFragment[D](IncRating)))
-    assertFalse(select[A](m).isDefined)
-    assertTrue(select[D](m).isDefined)
-
-    // this should not compile
-    //    val c2 = compose[(A with B) or D1]
-    //    val cr2: &[A or B] = c2
-
-    //    val compositeNoAlts = compose[EntityB with EntityBRenderer with EntityBRendererDecorator with XMLRenderer]
-    //    // this should not compile since the missing optional fragments EntityBRendererDecorator and XMLRenderer
-    //    A.exclRefTest(compositeNoAlts)
-
-    val compositeWithCompleteAlts = compose[EntityB with EntityBRenderer with /?[EntityBRendererDecorator] with /?[XMLRenderer]]
-    assertTrue(A.exclRefTest(compositeWithCompleteAlts))
-
-    //    val compositeWithMutuallyExclAlts = compose[EntityB with EntityBRenderer with (EntityBRendererDecorator or XMLRenderer)]
-    //    //this should not compile since it fails during the inclusive model validation (which precedes the exclusivity check) the source model cannot yield [EntityB with EntityBRenderer with EntityBRendererDecorator with XMLRenderer] alternative
-    //    assertTrue(A.exclRefTest(compositeWithMutuallyExclAlts))
-
-    //    val compositeWithAlts = compose[EntityB with EntityBRenderer with EntityBRendererDecorator with /?[XMLRenderer]]
-    //    //this should not compile since the missing optional fragment EntityBRendererDecorator
-    //    assertTrue(A.exclRefTest(compositeWithAlts))
-
-    //
-    //    // this should not compile since the missing EntityBRenderer
-    //    val incompatibleComp = compose[EntityB]
-    //    assertTrue(A.inclRefTest(incompatibleComp))
-
-    val incompleteComp = compose_?[EntityBRenderer with /?[EntityBRendererDecorator] with /?[XMLRenderer]]
-
-    // this should not compile since the reference requires the deps check
-    //val depsCheckCompRef: &[EntityBRenderer with /?[EntityBRendererDecorator] with /?[XMLRenderer]] = incompleteComp
-
-    // this should compile since the reference does not require the deps check
-    val nodepsCheckCompRef: &?[EntityBRenderer with /?[EntityBRendererDecorator] with /?[XMLRenderer]] = incompleteComp
-
-  }
+//  @Test
+//  def testExclusiveReference(): Unit = {
+//    val c = compose[(A with B) or D1]
+//    val cr: &[A or D] = c
+//    val m = *(cr).~
+//    m.remorph(RatingStrategy(m.strategy, hasFragment[A](IncRating)))
+//    assertTrue(select[A](m).isDefined)
+//    m.remorph(RatingStrategy(m.strategy, hasFragment[A](DecRating), hasFragment[D](IncRating)))
+//    assertFalse(select[A](m).isDefined)
+//    assertTrue(select[D](m).isDefined)
+//
+//    // this should not compile
+//    //    val c2 = compose[(A with B) or D1]
+//    //    val cr2: &[A or B] = c2
+//
+//    //    val compositeNoAlts = compose[EntityB with EntityBRenderer with EntityBRendererDecorator with XMLRenderer]
+//    //    // this should not compile since the missing optional fragments EntityBRendererDecorator and XMLRenderer
+//    //    A.exclRefTest(compositeNoAlts)
+//
+//    val compositeWithCompleteAlts = compose[EntityB with EntityBRenderer with /?[EntityBRendererDecorator] with /?[XMLRenderer]]
+//    assertTrue(A.exclRefTest(compositeWithCompleteAlts))
+//
+//    //    val compositeWithMutuallyExclAlts = compose[EntityB with EntityBRenderer with (EntityBRendererDecorator or XMLRenderer)]
+//    //    //this should not compile since it fails during the inclusive model validation (which precedes the exclusivity check) the source model cannot yield [EntityB with EntityBRenderer with EntityBRendererDecorator with XMLRenderer] alternative
+//    //    assertTrue(A.exclRefTest(compositeWithMutuallyExclAlts))
+//
+//    //    val compositeWithAlts = compose[EntityB with EntityBRenderer with EntityBRendererDecorator with /?[XMLRenderer]]
+//    //    //this should not compile since the missing optional fragment EntityBRendererDecorator
+//    //    assertTrue(A.exclRefTest(compositeWithAlts))
+//
+//    //
+//    //    // this should not compile since the missing EntityBRenderer
+//    //    val incompatibleComp = compose[EntityB]
+//    //    assertTrue(A.inclRefTest(incompatibleComp))
+//
+//    val incompleteComp = compose_?[EntityBRenderer with /?[EntityBRendererDecorator] with /?[XMLRenderer]]
+//
+//    // this should not compile since the reference requires the deps check
+//    //val depsCheckCompRef: &[EntityBRenderer with /?[EntityBRendererDecorator] with /?[XMLRenderer]] = incompleteComp
+//
+//    // this should compile since the reference does not require the deps check
+//    val nodepsCheckCompRef: &?[EntityBRenderer with /?[EntityBRendererDecorator] with /?[XMLRenderer]] = incompleteComp
+//
+//  }
 
   @Test
   def testExistentialReference(): Unit = {

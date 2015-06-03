@@ -370,11 +370,16 @@ trait Animal {
     val carnivoreMonitor = new EventMonitor[Boolean]("foodPref", morphEvent)
     addListener(carnivoreMonitor)
 
-    implicit val strategy = craveForModel.activator(
-      ?[Apple] { _ => carnivoreMonitor(false, true)} orElse
-        ?[Fish] { _ => carnivoreMonitor(true, false)})
+    val altSel = () =>
+      if (carnivoreMonitor(false, true))
+      Some(0)
+    else if (carnivoreMonitor(true, false))
+      Some(1)
+    else
+      None
+    val strategy = promote[craveForModel.Model](altSel)
 
-    val proxy = craveForModel.morph_~
+    val proxy = craveForModel.morph_~(strategy)
     proxy.startListening(morphEvent.nameSelector)
     addListener(new MutableFragmentListener {
       override def onEvent(eventName: String, eventValue: Any, eventSource: Any): List[CompositeEvent[_]] = {

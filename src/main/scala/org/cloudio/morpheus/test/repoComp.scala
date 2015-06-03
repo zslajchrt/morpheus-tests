@@ -39,29 +39,29 @@ object A {
     select[EntityBRenderer](m).isDefined
   }
 
-  def exclRefTest(cmpRef: &[MyCompType1]): Boolean = {
-    val cmp = *(cmpRef)
-    import cmp._
-
-    // this is the test corresponding to the definition of the exclusive composite reference
-
-    // the inclusivity check
-    //val m = cmp.morph_~(lookupAlt(isFragment[XMLRenderer], isFragment[EntityBRendererDecorator]))
-    val m = cmp.morph_~(RatingStrategy(defaultStrategy, hasFragment[XMLRenderer](IncRating), hasFragment[EntityBRendererDecorator](IncRating)))
-
-    if (select[XMLRenderer with EntityBRendererDecorator](m).isDefined) {
-
-      // the exclusivity check, we must be able to turn off the fragments
-      //val m = cmp.morph_~(lookupAlt(isNotFragment[XMLRenderer], isNotFragment[EntityBRendererDecorator]))
-      val m = cmp.morph_~(RatingStrategy(defaultStrategy, hasFragment[XMLRenderer](DecRating), hasFragment[EntityBRendererDecorator](DecRating)))
-
-      !select[XMLRenderer](m).isDefined && !select[EntityBRendererDecorator](m).isDefined &&
-        select[EntityBRenderer](m).isDefined
-
-    } else {
-      false
-    }
-  }
+//  def exclRefTest(cmpRef: &[MyCompType1]): Boolean = {
+//    val cmp = *(cmpRef)
+//    import cmp._
+//
+//    // this is the test corresponding to the definition of the exclusive composite reference
+//
+//    // the inclusivity check
+//    //val m = cmp.morph_~(lookupAlt(isFragment[XMLRenderer], isFragment[EntityBRendererDecorator]))
+//    val m = cmp.morph_~(RatingStrategy(defaultStrategy, hasFragment[XMLRenderer](IncRating), hasFragment[EntityBRendererDecorator](IncRating)))
+//
+//    if (select[XMLRenderer with EntityBRendererDecorator](m).isDefined) {
+//
+//      // the exclusivity check, we must be able to turn off the fragments
+//      //val m = cmp.morph_~(lookupAlt(isNotFragment[XMLRenderer], isNotFragment[EntityBRendererDecorator]))
+//      val m = cmp.morph_~(RatingStrategy(defaultStrategy, hasFragment[XMLRenderer](DecRating), hasFragment[EntityBRendererDecorator](DecRating)))
+//
+//      !select[XMLRenderer](m).isDefined && !select[EntityBRendererDecorator](m).isDefined &&
+//        select[EntityBRenderer](m).isDefined
+//
+//    } else {
+//      false
+//    }
+//  }
 
 
   implicit val pongConfig = PongConfig.cfg
