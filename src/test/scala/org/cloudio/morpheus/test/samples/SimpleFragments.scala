@@ -211,7 +211,7 @@ trait R {
 }
 
 
-//@dimension
+@ignore @dimension
 trait S[X] {
 
   def getX: X
@@ -221,7 +221,7 @@ trait S[X] {
 }
 
 @fragment
-trait SImpl extends S[Int] {
+trait SInt extends S[Int] {
   private var x_ : Int = _
 
   override def getX: Int = x_
@@ -229,6 +229,14 @@ trait SImpl extends S[Int] {
   override def setX(x: Int): Unit = x_ = x
 }
 
+@fragment
+trait SBoolean extends S[Boolean] {
+  private var x_ : Boolean = _
+
+  override def getX: Boolean = x_
+
+  override def setX(x: Boolean): Unit = x_ = x
+}
 
 trait S$dimension[X] extends SuperBase[S[X]] with S[X] {
 
@@ -243,6 +251,7 @@ trait SWrapper extends S[Int] {
   abstract override def getX = 2 * super.getX
 }
 
+@ignore @dimension
 trait T {
 
   type X

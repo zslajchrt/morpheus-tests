@@ -572,7 +572,9 @@ class CompositeMappingTests {
     val p5 = d5.make
     assertEquals(9, p5.onD(3)) // there is D2 producing 3 * 3
 
-    val c6: &[A with D] = compose[A with D1]
+
+    val c6Kern = compose[A with D1]
+    val c6: &[A with D] = c6Kern
     val d6 = *(c6)
     val d6_x: MorphKernel[A with D] = *(c6)
     val p6 = d6.make
@@ -583,7 +585,6 @@ class CompositeMappingTests {
     val d7_x: MorphKernel[A with D2] = *(c7, single[D2])
     val p7 = d7.make
     assertEquals(36, p7.onD(3)) // there is D2.onD is producing 3 * 3, but I.onD changes it to (2*3) * (2*3)) = 36
-
   }
 
   @Test
@@ -609,9 +610,23 @@ class CompositeMappingTests {
     // todo: annotated fragment placeholder: the annotation tells that the placeholder is going to have the annotation
 
     val c0: &[({type i = I@dimension @wrapper})#i] = compose[A with H with B with C with D1 with I]
+
+    // Note: The previous statement is equivalent to the following two. It is just an illustration of the capability to
+    // recognize and match annotations specified in morph types.
+
+    //val c0: &[({type i = I@dimension})#i] = compose[A with H with B with C with D1 with I]
+    //val c0: &[I] = compose[A with H with B with C with D1 with I]
+
     val d0 = *(c0)
     val p0 = d0.make
+    println(p0.myAlternative)
     assertEquals(24, p0.onI(3))
+
+    val c0_1: &[ident[({type i = D@dimension @wrapper})#i]] = compose[A with H with B with C with D1 with I]
+    val c0_1_errKern = compose[A with H with B with C with D1]
+    // it should not compile since there is no fragment implementing D and being annotated with both @dimension and @wrapper
+    //val c0_1_err: &[ident[({type i = D@dimension @wrapper})#i]] = c0_1_errKern
+    val c0_1_ok: &[ident[({type fd = D@fragment})#fd]] = c0_1_errKern
 
     val c1: &[$[({type wd = D@dimension})#wd]] = compose[A with H with B with C with D1 with I]
     val d1 = *(c1, single[D2])
@@ -622,7 +637,6 @@ class CompositeMappingTests {
     val d2 = *(c2, single[A])
     val p2 = d2.make
     assertEquals(36, p1.onD(3)) // there is D1 producing 3 + 3
-
   }
 
   @Test

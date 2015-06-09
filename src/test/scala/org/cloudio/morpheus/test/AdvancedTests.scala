@@ -409,9 +409,11 @@ class AdvancedTests {
 
   @Test
   def testGenericDimensionWithManuallyCreatedSuperDelegator(): Unit = {
-    val m1 = compose[SImpl with SWrapper].~
+    val m1 = compose[SInt with SWrapper].~
     m1.setX(1)
     assertEquals(2, m1.getX)
+
+    //val mErr = compose[SBoolean with SWrapper].~
 
     val m2 = compose[TImpl with TWrapper].~
     m2.setX(1)
