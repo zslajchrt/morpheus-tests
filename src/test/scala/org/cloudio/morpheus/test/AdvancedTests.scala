@@ -15,6 +15,94 @@ import org.junit.Test
 class AdvancedTests {
 
   @Test
+  def testMaskingAndPromotingStrategy(): Unit = {
+    val tlModel = parse[Red or Yellow or Green](true)
+
+    var lightSel: Int = 0
+    val s0 = promote[Red or Yellow or Green](lightSel)
+    var redCtrl: Int = 0
+    val s1 = mask[\?[Red]](s0, redCtrl)
+    var yellowCtrl: Int = 0
+    val s2 = mask[\?[Yellow]](s1, yellowCtrl)
+    var greenCtrl: Int = 0
+    val s3 = mask[\?[Green]](s2, greenCtrl)
+    val tlComp = compose(tlModel, s3)
+
+    // no masking
+
+    select[Red](tlComp.~) match {
+      case None => fail()
+      case Some(r) => // OK
+    }
+
+    lightSel = 1
+    tlComp.~.remorph
+
+    select[Yellow](tlComp.~) match {
+      case None => fail()
+      case Some(y) => // OK
+    }
+
+    lightSel = 2
+    tlComp.~.remorph
+    select[Green](tlComp.~) match {
+      case None => fail()
+      case Some(g) => // OK
+    }
+
+    // red is masked, i.e. no non-red alternatives are available
+    redCtrl = 1
+    lightSel = 2 // green
+    tlComp.~.remorph
+
+    // only red is available
+    select[Red](tlComp.~) match {
+      case None => fail()
+      case Some(r) => // OK
+    }
+
+    // red is unmasked
+    redCtrl = 0
+
+    tlComp.~.remorph
+
+    // green should be now available
+    select[Green](tlComp.~) match {
+      case None => fail()
+      case Some(r) => // OK
+    }
+  }
+
+  @Test
+  def testMaskingStrategy(): Unit = {
+    val tlModel = parse[Red or Yellow or Green](true)
+
+    var lightSel: Int = 0
+    val tlStrategy = mask[Red or Yellow or Green](lightSel)
+    val tlComp = compose(tlModel, tlStrategy)
+
+    select[Red](tlComp.~) match {
+      case None => fail()
+      case Some(r) => // OK
+    }
+
+    lightSel = 1
+    tlComp.~.remorph
+
+    select[Yellow](tlComp.~) match {
+      case None => fail()
+      case Some(y) => // OK
+    }
+
+    lightSel = 2
+    tlComp.~.remorph
+    select[Green](tlComp.~) match {
+      case None => fail()
+      case Some(g) => // OK
+    }
+  }
+
+  @Test
   def testRatingStrategyWithImmutableMorph(): Unit = {
     val tlModel = parse[Red or Yellow or Green](true)
 
