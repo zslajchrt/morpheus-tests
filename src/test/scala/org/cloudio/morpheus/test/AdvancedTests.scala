@@ -14,6 +14,40 @@ import org.junit.Test
 */
 class AdvancedTests {
 
+
+  @Test
+  def testMaskingStrategyInReference(): Unit = {
+    val tlModel = parse[Red or Yellow or Green](true)
+
+    var lightSel: Int = 0
+    val tlStrategy = mask[Red or Yellow or Green](lightSel)
+    val tlComp = compose(tlModel, tlStrategy)
+    val tlCompRef: &[Red or Green] = tlComp
+    val tlComp2 = *(tlCompRef)
+
+    select[Red](tlComp2.~) match {
+      case None => fail()
+      case Some(r) => // OK
+    }
+
+    lightSel = 2
+    tlComp2.~.remorph
+
+    select[Green](tlComp2.~) match {
+      case None => fail()
+      case Some(y) => // OK
+    }
+
+    // masking the unpaired source fragment has no effect on the target fragment mask, thus we expect Red
+    lightSel = 1
+    tlComp2.~.remorph
+    select[Red](tlComp2.~) match {
+      case None => fail()
+      case Some(g) => // OK
+    }
+  }
+
+
   @Test
   def testMaskingAndPromotingStrategy(): Unit = {
     val tlModel = parse[Red or Yellow or Green](true)
