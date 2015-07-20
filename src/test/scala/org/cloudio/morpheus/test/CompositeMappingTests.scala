@@ -680,4 +680,34 @@ class CompositeMappingTests {
     // todo
     //val c0: &[A with $[A]] = compose[A with H with B with C with D1 with I]
   }
+
+
+  @Test
+  def testNoHiddenFragRefTotalConformance(): Unit = {
+    // should not compile since B becomes hidden in r0
+    //    val c0 = compose[A with B]
+    //    val r0: &![A] = c0
+    //    val c1 = *(r0)
+    //    val r1: &[A with $[H]] = c1
+
+    // only {A} alternative is mapped to r2, thus no hidden fragments in r2 mappings
+    val c2 = compose[A or B]
+    val r2: &![A] = c2
+    val c3 = *(r2)
+    val r3: &[A with $[H]] = c3
+  }
+
+  @Test
+  def testNoHiddenFragRefPartialConformance(): Unit = {
+    // should not compile since H becomes hidden in r0
+    //    val c0 = compose[A with H]
+    //    val r0: ~&![A or B] = c0
+
+    // only {A} alternative is mapped to r2, thus no hidden fragments in r2 mappings
+    val c2 = compose[A]
+    val r2: ~&![A or B] = c2
+    val c3 = *(r2)
+    val r3: &[Unit] = c3
+  }
+
 }
