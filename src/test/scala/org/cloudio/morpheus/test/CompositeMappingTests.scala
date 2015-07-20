@@ -710,4 +710,21 @@ class CompositeMappingTests {
     val r3: &[Unit] = c3
   }
 
+  @Test
+  def testReferenceWithDependenciesOnImplicitFragment(): Unit = {
+    val c2 = compose[B with C]
+    val r2: &[C] = c2
+    val c3 = *(r2)
+
+    // B is implicitly present in c3 through C, which depends on B
+    val r3: &[B] = c3
+    assertEquals("aaa", *(r3).~.onB("aaa"))
+    // X depends on B, which is implicitly present in c3 since C depends on B as well
+    val r4: &[$[X]] = c3
+    assertEquals("Xaaa", *(r4, single[X]).~.onX("aaa"))
+    // replacing the implicit fragment B
+    val r5: &[$[B]] = c3
+    assertEquals("aaa", *(r5, single[B]).~.onB("aaa"))
+  }
+
 }

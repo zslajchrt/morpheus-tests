@@ -11,5 +11,4 @@ import org.junit.Test
  */
 class TemporaryTests {
 
-
 }

@@ -64,6 +64,7 @@ trait C {
 
 }
 
+
 @dimension
 trait D {
   def onD(l: Long): Long
@@ -332,6 +333,13 @@ trait WPartial {
 trait WTotal {
   this: (A or B) =>
 
+}
+
+@fragment
+trait X {
+  this: B =>
+
+  def onX(a: String) = onB("X" + a)
 }
 
 @fragment
