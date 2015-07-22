@@ -355,6 +355,11 @@ trait Yellow {
 trait Green {
 }
 
+@fragment
+trait Color {
+  var color: Int = 0
+}
+
 
 case class Player(name: String, origin: String)
 

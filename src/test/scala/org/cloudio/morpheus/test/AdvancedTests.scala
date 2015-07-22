@@ -49,6 +49,27 @@ class AdvancedTests {
 
 
   @Test
+  def testPromotingStrategyDrivenByInternalState(): Unit = {
+    val tlModel = parse[(Red or Yellow or Green) with Color](true)
+    val strat = promote[Red or Yellow or Green](tlModel)({
+      case None => None
+      case Some(tl) => Some(tl.color)
+    })
+
+    val tlKernel = singleton(tlModel, strat)
+
+    assertTrue(select[Red](tlKernel.~).isDefined)
+
+    tlKernel.~.color = 1
+
+    assertTrue(select[Yellow](tlKernel.~.remorph()).isDefined)
+
+    tlKernel.~.color = 2
+
+    assertTrue(select[Green](tlKernel.~.remorph()).isDefined)
+  }
+
+  @Test
   def testMaskingAndPromotingStrategy(): Unit = {
     val tlModel = parse[Red or Yellow or Green](true)
 
@@ -528,6 +549,7 @@ class AdvancedTests {
     morph1.switch(init = false)
     assertTrue(select[A](morph1).isDefined)
   }
+
 
   @Test
   def testGenericDimensionWithManuallyCreatedSuperDelegator(): Unit = {
