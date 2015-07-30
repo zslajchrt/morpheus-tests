@@ -14,6 +14,37 @@ import org.junit.Test
 */
 class AdvancedTests {
 
+  @Test
+  def testMoreSameFragmentsInSourceMorphType(): Unit = {
+    val k1 = singleton[(A with D1) or (A with D2) or B]
+    val a1 = asMorphOf[A with D1](k1.!)
+    val a2 = asMorphOf[A with D2](k1.!)
+
+    a1.onA(1)
+    assertEquals(1, a1.xx)
+    assertEquals(1, a2.xx)
+    a2.onA(1)
+    assertEquals(2, a1.xx)
+    assertEquals(2, a2.xx)
+
+    val r1: &[A or B] = k1
+    val k2 = *(r1)
+    select[A](k2.!) match {
+      case None => fail()
+      case Some(a3) =>
+        assertEquals(2, a3.xx)
+        a3.onA(1)
+        assertEquals(3, a1.xx)
+        assertEquals(3, a2.xx)
+        assertEquals(3, a3.xx)
+
+        val a = k1.fragments.select[FragmentHolder[A]].proxy
+        assertEquals(3, a.xx)
+    }
+
+
+    //
+  }
 
   @Test
   def testMaskingStrategyInReference(): Unit = {
@@ -38,12 +69,15 @@ class AdvancedTests {
       case Some(y) => // OK
     }
 
-    // masking the unpaired source fragment has no effect on the target fragment mask, thus we expect Red
+    // masking the unpaired source fragment
     lightSel = 1
-    tlComp2.~.remorph
-    select[Red](tlComp2.~) match {
-      case None => fail()
-      case Some(g) => // OK
+    try {
+      tlComp2.~.remorph
+      fail()
+    }
+    catch {
+      case e: AlternativeNotAvailableException =>
+        // OK
     }
   }
 
@@ -67,6 +101,34 @@ class AdvancedTests {
     tlKernel.~.color = 2
 
     assertTrue(select[Green](tlKernel.~.remorph()).isDefined)
+  }
+
+  @Test
+  def testMaskingAndKernelReference(): Unit = {
+    val tlModel = parse[Red or Yellow or Green](true)
+
+    var lightSel: Int = 1 // deliberately set to a non-RED, which is not present in the kernel ref model
+    val tlStrategy = mask[Red or Yellow or Green](lightSel)
+    val tlKernel = compose(tlModel, tlStrategy)
+
+    val tlRef: &[/?[Red with $[RedEx]]] = tlKernel
+    val tlKernel2 = *(tlRef, single[RedEx])
+
+    val x1 = ()
+    val x2 = ()
+
+    select[RedEx](tlKernel2.~) match {
+      case None => // OK
+      case Some(r) => fail()
+    }
+
+    lightSel = 0 // set TL to RED
+
+    // Now the underlying model masks RED so {Red with RedEx} alt can be selected in the slave model
+    select[RedEx](tlKernel2.~.remorph) match {
+      case None => fail()
+      case Some(r) => // OK
+    }
   }
 
   @Test
@@ -403,8 +465,8 @@ class AdvancedTests {
   def testFragmentConformanceLevel(): Unit = {
     // WPartial -> [A or B]
 
-//    val exist0 = compose[D1 with WPartial] // this should not compile
-//    val incl0 = compose[D1 with WTotal] // this should not compile
+    //val exist0 = compose[D1 with WPartial] // this should not compile
+    //val incl0 = compose[D1 with WTotal] // this should not compile
 
     val exist1 = compose[A with WPartial]
     //val incl1 = compose[A with WTotal] // this should not compile
@@ -428,11 +490,11 @@ class AdvancedTests {
     // Partial level ref
 
     //val existRef: ~&[A or B] = c1  // this should not compile: A and B are antagonists
-    //val existRef2: ~&[A or B] = existInst // this should not compile: A and B are antagonists
 
-    //val inclRef: &[A or B] = existInst // this should not compile: incompatible conformance levels
+    //val inclRef: &[A or B] = existInst0 // this should not compile: incompatible conformance levels
 
   }
+
 
   @Test
   def testTotalConformanceLevel(): Unit = {

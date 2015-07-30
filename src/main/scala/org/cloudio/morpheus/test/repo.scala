@@ -642,6 +642,7 @@ trait AlbumEditor extends Album with AlbumEditorConfig {
 }
 
 
+
 object AlbumEditor {
 
 //  def isIcon(photo: Photo): Boolean = {

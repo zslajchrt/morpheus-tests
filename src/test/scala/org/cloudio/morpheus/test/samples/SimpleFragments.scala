@@ -16,7 +16,12 @@ class SimpleFragments {
 
 @fragment
 trait A {
-  def onA(x: Int) = x
+  var xx = 0
+
+  def onA(x: Int) = {
+    xx += x
+    x
+  }
 }
 
 @fragment
@@ -354,6 +359,13 @@ trait Yellow {
 @fragment
 trait Green {
 }
+
+@fragment
+trait RedEx {
+ this: Red =>
+
+}
+
 
 @fragment
 trait Color {
