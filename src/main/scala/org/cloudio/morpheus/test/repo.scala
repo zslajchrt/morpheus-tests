@@ -17,6 +17,7 @@ trait EntityBase {
   val id: Int
 }
 
+@deprecated
 case class EntityA(id: Int) extends EntityBase {
   def this() = this(0)
 

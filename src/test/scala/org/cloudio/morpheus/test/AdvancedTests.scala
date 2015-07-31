@@ -15,6 +15,33 @@ import org.junit.Test
 class AdvancedTests {
 
   @Test
+  def testComplexPlaceholder(): Unit = {
+    val k1 = singleton[A with B]
+    // $[X with XW1 with $[A]] is translated to $[X] with $[XW1] with A
+    val r1: &[$[X with XW1 with $[A]]] = k1
+    val k2 = *(r1, single[X], single[XW1])
+    val res = k2.~.onX("x")
+    assertEquals("XXW1x", res)
+  }
+
+
+  @Test
+  def testPlaceholderWrapsPlaceholder(): Unit = {
+    val k1 = singleton[A with B]
+    val r1: &[$[X] with $[XW1]] = k1
+    val k2 = *(r1, single[X], single[XW1])
+    val res = k2.~.onX("x")
+    assertEquals("XXW1x", res)
+  }
+
+  @Test
+  def testSelfKernelReference(): Unit = {
+    val k1 = singleton[((A with D1) or (B with C with D2)) with WTotal]
+    val r1: &[WTotal with (A or B)] = k1.~.getWTotalRef
+    val k2 = *(r1)
+  }
+
+  @Test
   def testMoreSameFragmentsInSourceMorphType(): Unit = {
     val k1 = singleton[(A with D1) or (A with D2) or B]
     val a1 = asMorphOf[A with D1](k1.!)

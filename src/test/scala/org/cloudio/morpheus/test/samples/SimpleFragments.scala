@@ -338,6 +338,19 @@ trait WPartial {
 trait WTotal {
   this: (A or B) =>
 
+  def getWTotalRef: &[WTotal with (A or B)] = {
+    &&(this)
+//    import org.morpheus._
+//    import org.morpheus.Morpheus._
+//    val ref = mirror(this) match {
+//      case None => None
+//      case Some(m) =>
+//        val fh = m.kernel.fragmentHolder[WTotal]
+//        val depsMaps = fh.get.fragment.depsMappings.get
+//        Some(new &(m.kernel.asInstanceOf[MorphKernel[Any]], depsMaps))
+//    }
+//    null
+  }
 }
 
 @fragment
@@ -345,6 +358,13 @@ trait X {
   this: B =>
 
   def onX(a: String) = onB("X" + a)
+}
+
+@fragment @wrapper
+trait XW1 extends X {
+  this: B =>
+
+  override def onX(a: String) = super.onX("XW1" + a)
 }
 
 @fragment

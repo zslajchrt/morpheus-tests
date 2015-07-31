@@ -425,33 +425,33 @@ class EssentialCasesTests {
 //    assertEquals(1, logger.counterLoggerX) // no change, the logger is OFF
 //
 //  }
-
-  @Test
-  def testAlternativeFragmentsDependentOnEntity(): Unit = {
-
-    implicit val ent = external(EntityA(100))
-    val model = singleton[EntityA with (EntityAJSONPrinter or EntityACSVPrinter)]
-    import model._
-
-    var printFmt = 'json
-
-    implicit val morphStrategy = activator(
-      ?[EntityAJSONPrinter] { _ => printFmt == 'json} orElse
-        ?[EntityACSVPrinter] { _ => printFmt == 'csv}
-    )
-
-    val morph = model.morph_~
-
-    var out = morph.print()
-    assertEquals("{'id': 100}", out)
-
-    printFmt = 'csv
-    morph.remorph()
-
-    out = morph.print()
-    assertEquals("100", out)
-  }
-
+//
+//  @Test
+//  def testAlternativeFragmentsDependentOnEntity(): Unit = {
+//
+//    implicit val ent = external(EntityA(100))
+//    val model = singleton[EntityA with (EntityAJSONPrinter or EntityACSVPrinter)]
+//    import model._
+//
+//    var printFmt = 'json
+//
+//    implicit val morphStrategy = activator(
+//      ?[EntityAJSONPrinter] { _ => printFmt == 'json} orElse
+//        ?[EntityACSVPrinter] { _ => printFmt == 'csv}
+//    )
+//
+//    val morph = model.morph_~
+//
+//    var out = morph.print()
+//    assertEquals("{'id': 100}", out)
+//
+//    printFmt = 'csv
+//    morph.remorph()
+//
+//    out = morph.print()
+//    assertEquals("100", out)
+//  }
+//
 //  @Test
 //  def testSharingFragments() {
 //    //val model = compose[EntityA with \?[EntityAValidator] with \?[EntityALogger]]

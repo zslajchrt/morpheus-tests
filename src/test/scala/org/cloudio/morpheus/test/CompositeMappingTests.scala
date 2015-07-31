@@ -13,6 +13,7 @@ import org.junit.Assert._
 */
 class CompositeMappingTests {
 
+
   @Test
   def testPartialToPartial(): Unit = {
     //    A -> A
