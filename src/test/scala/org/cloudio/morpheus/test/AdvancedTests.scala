@@ -74,6 +74,34 @@ class AdvancedTests {
   }
 
   @Test
+  def testUnmasking(): Unit = {
+    val tlModel = parse[Red or Yellow or Green](true)
+    var lightBlocked: Option[Int] = None
+    val s1 = unmask[Red or Yellow or Green](rootStrategy(tlModel), lightBlocked)
+    var lightSel: Int = 0
+    val s2 = promote[Red or Yellow or Green](s1, lightSel)
+    val tlComp = singleton(tlModel, s2)
+
+    assertTrue(select[Red](tlComp.~.remorph).isDefined)
+    lightSel = 1
+    assertTrue(select[Yellow](tlComp.~.remorph).isDefined)
+    lightSel = 2
+    assertTrue(select[Green](tlComp.~.remorph).isDefined)
+
+
+    lightBlocked = Some(2) // block green
+
+    lightSel = 0
+    assertTrue(select[Red](tlComp.~.remorph).isDefined)
+    lightSel = 1
+    assertTrue(select[Yellow](tlComp.~.remorph).isDefined)
+    lightSel = 2
+    // Despite the green is promoted, the red is selected since the green is prohibited and the red is the first
+    // available alternative in the model
+    assertTrue(select[Red](tlComp.~.remorph).isDefined)
+  }
+
+  @Test
   def testMaskingStrategyInReference(): Unit = {
     val tlModel = parse[Red or Yellow or Green](true)
 
@@ -159,17 +187,17 @@ class AdvancedTests {
   }
 
   @Test
-  def testMaskingAndPromotingStrategy(): Unit = {
+  def testUnmaskingAndPromotingStrategy(): Unit = {
     val tlModel = parse[Red or Yellow or Green](true)
 
     var lightSel: Int = 0
     val s0 = promote[Red or Yellow or Green](lightSel)
-    var redCtrl: Int = 0
-    val s1 = mask[\?[Red]](s0, redCtrl)
-    var yellowCtrl: Int = 0
-    val s2 = mask[\?[Yellow]](s1, yellowCtrl)
-    var greenCtrl: Int = 0
-    val s3 = mask[\?[Green]](s2, greenCtrl)
+    var redCtrl: Int = 1
+    val s1 = unmask[/?[Red]](s0, redCtrl)
+    var yellowCtrl: Int = 1
+    val s2 = unmask[/?[Yellow]](s1, yellowCtrl)
+    var greenCtrl: Int = 1
+    val s3 = unmask[/?[Green]](s2, greenCtrl)
     val tlComp = compose(tlModel, s3)
 
     // no masking
@@ -194,24 +222,23 @@ class AdvancedTests {
       case Some(g) => // OK
     }
 
-    // red is masked, i.e. no non-red alternatives are available
     redCtrl = 1
-    lightSel = 2 // green
-    tlComp.~.remorph
-
-    // only red is available
-    select[Red](tlComp.~) match {
+    yellowCtrl = 0
+    greenCtrl = 0
+    lightSel = 2 // green is promoted but forbidden
+    // yellow and green are cleared, only red is available
+    select[Red](tlComp.~.remorph) match {
       case None => fail()
       case Some(r) => // OK
     }
 
     // red is unmasked
-    redCtrl = 0
-
-    tlComp.~.remorph
+    redCtrl = 1
+    yellowCtrl = 1
+    greenCtrl = 1
 
     // green should be now available
-    select[Green](tlComp.~) match {
+    select[Green](tlComp.~.remorph) match {
       case None => fail()
       case Some(r) => // OK
     }
