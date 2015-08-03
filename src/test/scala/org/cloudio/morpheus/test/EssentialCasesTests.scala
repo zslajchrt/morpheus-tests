@@ -6,6 +6,7 @@ import org.morpheus._
 import org.cloudio.morpheus.test.samples._
 import org.junit.Assert._
 import org.junit.Test
+import org.morpheus.test.illTyped
 
 /**
 * Created by zslajchrt on 01/03/15.
@@ -1113,16 +1114,19 @@ class EssentialCasesTests {
     assertTrue(A.inclRefTest(compositeWithAlts))
 
     // this should not compile since the missing EntityBRenderer
-    //    val incompatibleComp = compose[EntityB]
-    //    assertTrue(A.inclRefTest(incompatibleComp))
+    val incompatibleComp = compose[EntityB]
+    illTyped(
+      """
+        A.inclRefTest(incompatibleComp)
+      """)
 
     val incompleteComp = compose_?[EntityBRenderer with EntityBRendererDecorator with XMLRenderer]
 
-    // this should not compile since the reference requires the deps check
-    //val depsCheckCompRef: &[EntityBRenderer with EntityBRendererDecorator with XMLRenderer] = incompleteComp
+//    // this should not compile since the reference requires the deps check
+//    val depsCheckCompRef: &[EntityBRenderer with EntityBRendererDecorator with XMLRenderer] = incompleteComp
 
-    // this should compile since the reference does not require the deps check
-    val nodepsCheckCompRef: &?[EntityBRenderer with EntityBRendererDecorator with XMLRenderer] = incompleteComp
+//    // this should compile since the reference does not require the deps check
+//    val nodepsCheckCompRef: &?[EntityBRenderer with EntityBRendererDecorator with XMLRenderer] = incompleteComp
   }
 
 //  @Test
@@ -1177,8 +1181,11 @@ class EssentialCasesTests {
     assertTrue(A.existRefTest(comp))
 
     // This should not compile since there is no source alternative for any target one
-    //    val comp2 = compose[EntityB]
-    //    assertTrue(A.existRefTest(comp2))
+    illTyped(
+      """
+        val comp2 = compose[EntityB]
+        assertTrue(A.existRefTest(comp2))
+      """)
   }
 
   @Test
@@ -1220,11 +1227,19 @@ class EssentialCasesTests {
     implicit val pongConfig = PongConfig.cfg
     compose[Ping with Pong with (Unit or (EntityB with EntityBRenderer))]
 
-    // should not compile
-    //compose[Ping with (Unit or (EntityB with EntityBRenderer))]
+    // compose[Unit] //todo
 
     // should not compile
-    //compose[Ping with Pong with /?[EntityB] with /?[EntityBRenderer]]
+    illTyped(
+      """
+        compose[Ping with (Unit or (EntityB with EntityBRenderer))]
+      """)
+
+    // should not compile
+    illTyped(
+      """
+        compose[Ping with Pong with /?[EntityB] with /?[EntityBRenderer]]
+      """)
   }
 
   @Test
@@ -1259,7 +1274,10 @@ class EssentialCasesTests {
     specCompMut.remorph
 
     // Should not compile because of the unknown fragment PingLogger
-    //asMorphOf[EntityB with PingLogger](compositeWithAlts)
+    illTyped(
+      """
+        asMorphOf[EntityB with PingLogger](compositeWithAlts)
+      """)
 
     // Should not compile because of the LUB is not same as the composite type (there are two alternatives)
     //asMorphOf[EntityB with /?[XMLRenderer]](compositeWithAlts)

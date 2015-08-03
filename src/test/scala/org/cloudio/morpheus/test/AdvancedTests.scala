@@ -700,7 +700,7 @@ class AdvancedTests {
     illTyped(
       """
         val mErr = compose[SBoolean with SWrapper].~
-      """, "")
+      """, ".*No fragment implementing org.cloudio.morpheus.test.samples.S\\[X\\] found for wrapper org.cloudio.morpheus.test.samples.SWrapper.*")
 
 
     val m2 = compose[TImpl with TWrapper].~
