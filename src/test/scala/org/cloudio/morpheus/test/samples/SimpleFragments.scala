@@ -78,6 +78,7 @@ trait D {
 @fragment
 trait D1 extends D {
   override def onD(l: Long): Long = l + l
+  def onD1(l: Long): Long = l + l + l
 }
 
 @fragment
@@ -131,6 +132,15 @@ trait E {
 @fragment
 trait F {
   this: D1 =>
+
+  def onF(l: Long) = onD1(l)
+}
+
+@fragment
+trait FF {
+  this: F =>
+
+  def onFF(l: Long) = onF(l)
 }
 
 @fragment

@@ -8,6 +8,7 @@ import org.morpheus._
 import org.cloudio.morpheus.test.samples._
 import org.junit.Assert._
 import org.junit.Test
+import org.morpheus.test.illTyped
 
 /**
 * Created by zslajchrt on 07/04/15.
@@ -519,14 +520,32 @@ class AdvancedTests {
   def testFragmentConformanceLevel(): Unit = {
     // WPartial -> [A or B]
 
-    //val exist0 = compose[D1 with WPartial] // this should not compile
-    //val incl0 = compose[D1 with WTotal] // this should not compile
+    illTyped(
+      """
+        val exist0 = compose[D1 with WPartial]
+      """, ".*Source LUB.*")
+
+    illTyped(
+      """
+        val incl0 = compose[D1 with WTotal]
+      """, ".*Source LUB.*")
 
     val exist1 = compose[A with WPartial]
-    //val incl1 = compose[A with WTotal] // this should not compile
 
-    //val exist2 = compose[A with B with WPartial] // this should not compile: A and B are antagonists in WPartial
-    //val incl2 = compose[A with B with WTotal]  // this should not compile: A and B are antagonists in WPartial
+    illTyped(
+      """
+        val incl1 = compose[A with WTotal]
+      """, ".*Source LUB.*")
+
+    illTyped(
+      """
+        val exist2 = compose[A with B with WPartial]
+      """, ".*Target alternative template List\\(A, B\\) contains antagonists List\\(\\(A,B\\), \\(B,A\\)\\).*")
+
+    illTyped(
+      """
+        val incl2 = compose[A with B with WTotal]
+      """, ".*Target alternative template List\\(A, B\\) contains antagonists List\\(\\(A,B\\), \\(B,A\\)\\).*")
 
     val exist3 = compose[(A or B) with WPartial]
     val incl3 = compose[(A or B) with WTotal]
@@ -543,10 +562,15 @@ class AdvancedTests {
 
     // Partial level ref
 
-    //val existRef: ~&[A or B] = c1  // this should not compile: A and B are antagonists
+    illTyped(
+      """
+        val existRef: ~&[A or B] = c1
+      """, ".*Target alternative template List\\(A, B\\) contains antagonists List\\(\\(A,B\\), \\(B,A\\)\\).*")
 
-    //val inclRef: &[A or B] = existInst0 // this should not compile: incompatible conformance levels
-
+    illTyped(
+      """
+        val inclRef: &[A or B] = existInst0 // this should not compile: incompatible conformance levels
+      """, ".*Source LUB.*")
   }
 
 
@@ -673,7 +697,11 @@ class AdvancedTests {
     m1.setX(1)
     assertEquals(2, m1.getX)
 
-    //val mErr = compose[SBoolean with SWrapper].~
+    illTyped(
+      """
+        val mErr = compose[SBoolean with SWrapper].~
+      """, "")
+
 
     val m2 = compose[TImpl with TWrapper].~
     m2.setX(1)

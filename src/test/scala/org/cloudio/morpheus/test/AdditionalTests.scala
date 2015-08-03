@@ -5,6 +5,7 @@ import org.morpheus.Morpheus._
 import org.cloudio.morpheus.test.samples._
 import org.junit.Test
 import org.junit.Assert._
+import org.morpheus.test.illTyped
 
 /**
  *
@@ -29,9 +30,6 @@ class AdditionalTests {
       val ref1: &[C or D] = compose[A with ((B with C) or D1)]
       val ci1 = *(ref1)
 
-      // This should not compile because of the missing B
-      //val ref2a: &[(C with B) or D] = ci1
-
       val pxs = proxies(ci1)
       import pxs._
 
@@ -46,10 +44,7 @@ class AdditionalTests {
     //val ref1: &[C] = singleton[B with C]
     val ref1: &[B or (B with C)] = singleton[B or (B with C)]
     val ref1p: &[$[B] or ($[B] with C)] = singleton[B or (B with C)]
-    //val ci1 = *(ref1)
-
-    // This should not compile because the A placeholder is neither a plain replacement nor a wrapper
-    //val ref2a: &[$[A] with C] = ci1
+    val ci1 = *(ref1)
 
 //    val pxs = proxies(ci1)
 //    import pxs._
@@ -77,8 +72,7 @@ class AdditionalTests {
     val ref1: &[C] = compose[B with C]
     val ci1 = *(ref1)
 
-    // This should not compile because the A placeholder is neither a plain replacement nor a wrapper
-    //val ref2a: &[$[A] with C] = ci1
+    val ref2a: &[$[A] with C] = ci1
 
     val pxs = proxies(ci1)
     import pxs._

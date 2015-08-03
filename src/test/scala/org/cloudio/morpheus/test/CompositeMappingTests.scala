@@ -1,5 +1,6 @@
 package org.cloudio.morpheus.test
 
+import org.morpheus.test.illTyped
 import org.morpheus.{fragment, wrapper, dimension}
 import org.morpheus._
 import org.morpheus.Morpheus._
@@ -8,9 +9,9 @@ import org.junit.Test
 import org.junit.Assert._
 
 /**
-*
-* Created by zslajchrt on 27/03/15.
-*/
+ *
+ * Created by zslajchrt on 27/03/15.
+ */
 class CompositeMappingTests {
 
 
@@ -42,9 +43,20 @@ class CompositeMappingTests {
     //    A or B -> A
     //    A or B -> A with B
 
-    //val e1: ~&[A] = build(parse[\?[A]](true), true, SingletonProvider, RootStrategy(), Partial)
-    //val e2: ~&[A] = build(parse[A or B](true), true, SingletonProvider, RootStrategy(), Partial)
-    //val e3: ~&[A or B] = build(parse[A with B](true), true, SingletonProvider, RootStrategy(), Partial)
+    illTyped(
+      """
+        val e1: ~&[A] = build(parse[\?[A]](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Source LUB.*")
+
+    illTyped(
+      """
+        val e2: ~&[A] = build(parse[A or B](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Source LUB.*")
+
+    illTyped(
+      """
+        val e3: ~&[A or B] = build(parse[A with B](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Target alternative template List\\(A, B\\) contains antagonists List\\(\\(A,B\\), \\(B,A\\)\\).*")
 
   }
 
@@ -69,8 +81,15 @@ class CompositeMappingTests {
 
     // Invalid ones
     //    A or B -> A with B
-    //val e2: ~&[A with B] = build(parse[A or B](true), true, SingletonProvider, RootStrategy(), Total)
-    //val e3: ~&[\?[B]] = build(parse[A](true), true, SingletonProvider, RootStrategy(), Total)
+    illTyped(
+      """
+        val e2: ~&[A with B] = build(parse[A or B](true), true, SingletonProvider, RootStrategy(), Total)
+      """, ".*Source LUB.*")
+    // A -> \?[B]
+    illTyped(
+      """
+        val e3: ~&[\?[B]] = build(parse[A](true), true, SingletonProvider, RootStrategy(), Total)
+      """, ".*Source LUB.*")
 
   }
 
@@ -96,14 +115,35 @@ class CompositeMappingTests {
     //    A or B -> A or B
     //    (A or B) with (C or D) -> A or B
 
-    //val e1: &[A] = build(parse[\?[A]](true), true, SingletonProvider, RootStrategy(), Partial)
-    //val e2: &[\?[A]] = build(parse[\?[A]](true), true, SingletonProvider, RootStrategy(), Partial)
-    //val e3: &[A or B] = build(parse[A](true), true, SingletonProvider, RootStrategy(), Partial)
-    //val e4: &[A or B] = build(parse[A with B](true), true, SingletonProvider, RootStrategy(), Partial)
-    //val e5: &[A] = build(parse[A or B](true), true, SingletonProvider, RootStrategy(), Partial)
-    //val e6: &[A or B] = build(parse[A or B](true), true, SingletonProvider, RootStrategy(), Partial)
-    //val e7: &[A or B] = build(parse[(A or B) with (D1 or D2)](true), true, SingletonProvider, RootStrategy(), Partial)
-
+    illTyped(
+      """
+      val e1: &[A] = build(parse[\?[A]](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Source LUB Any cannot be assigned to org.cloudio.morpheus.test.samples.A.*")
+    illTyped(
+      """
+        val e2: &[\?[A]] = build(parse[\?[A]](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Source LUB Any cannot be assigned to org.cloudio.morpheus.test.samples.A.*")
+    illTyped(
+      """
+        val e3: &[A or B] = build(parse[A](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Source LUB org.cloudio.morpheus.test.samples.A cannot be assigned to org.cloudio.morpheus.test.samples.B.*")
+    illTyped(
+      """
+        val e4: &[A or B] = build(parse[A with B](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Target alternative template List\\(A, B\\) contains antagonists List\\(\\(A,B\\), \\(B,A\\)\\).*")
+    illTyped(
+      """
+        val e5: &[A] = build(parse[A or B](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Source LUB org.cloudio.morpheus.test.samples.B cannot be assigned to org.cloudio.morpheus.test.samples.A.*")
+    illTyped(
+      """
+        val e6: &[A or B] = build(parse[A or B](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Source LUB org.cloudio.morpheus.test.samples.B cannot be assigned to org.cloudio.morpheus.test.samples.A.*" +
+        "Source LUB org.cloudio.morpheus.test.samples.A cannot be assigned to org.cloudio.morpheus.test.samples.B.*")
+    illTyped(
+      """
+        val e7: &[A or B] = build(parse[(A or B) with (D1 or D2)](true), true, SingletonProvider, RootStrategy(), Partial)
+      """, ".*Source LUB.*")
   }
 
   @Test
@@ -127,8 +167,15 @@ class CompositeMappingTests {
     //    A with B -> A or B
     //    A -> A or B
 
-    //val e1: &[A or B] = build(parse[A with B](true), true, SingletonProvider, RootStrategy(), Total)
-    //val e2: &[A or B] = build(parse[A](true), true, SingletonProvider, RootStrategy(), Total)
+    illTyped(
+      """
+        val e1: &[A or B] = build(parse[A with B](true), true, SingletonProvider, RootStrategy(), Total)
+      """, ".*Target alternative template List\\(A, B\\) contains antagonists List\\(\\(A,B\\), \\(B,A\\)\\).*")
+
+    illTyped(
+      """
+        val e2: &[A or B] = build(parse[A](true), true, SingletonProvider, RootStrategy(), Total)
+      """, ".*Source LUB org.cloudio.morpheus.test.samples.A cannot be assigned to org.cloudio.morpheus.test.samples.B.*")
 
   }
 
@@ -153,8 +200,10 @@ class CompositeMappingTests {
       c3.altMappings)
 
     // should not compile
-    //val c4: &[A with B] = compose[A]
-
+    illTyped(
+      """
+        val c4: &[A with B] = compose[A]
+      """, ".*Source LUB org.cloudio.morpheus.test.samples.A cannot be assigned to org.cloudio.morpheus.test.samples.A with org.cloudio.morpheus.test.samples.B.*")
 
     // test dimension in the ref
     val c4: &[A with D] = compose[A with D1]
@@ -302,7 +351,10 @@ class CompositeMappingTests {
   @Test
   def testBasicNonOptionalWithPlaceholder(): Unit = {
     // should not compile
-    //val err1: &[A with $[E]] = compose[A]
+    illTyped(
+      """
+        val err1: &[A with $[E]] = compose[A]
+      """, ".*Unsatisfied placeholder org.cloudio.morpheus.test.samples.E dependencies.*")
 
     val b = singleton[B].!
     b.y = 1
@@ -319,7 +371,10 @@ class CompositeMappingTests {
       c1.altMappings)
 
     //should not compile - C is neither a placeholder nor a fragment in the source composite
-    //val n1: &[A with $[B] with C] = compose[A]
+    illTyped(
+      """
+        val n1: &[A with $[B] with C] = compose[A]
+      """, ".*Source LUB org.cloudio.morpheus.test.samples.A cannot be assigned to org.cloudio.morpheus.test.samples.A with org.cloudio.morpheus.test.samples.C.*")
 
     // B is a swap placeholder since it has the exact counterpart in the source composite, also there are no dependent fragments on B
     val c2: &[A with $[B]] = compose[A with B]
@@ -357,17 +412,27 @@ class CompositeMappingTests {
       c6.altMappings)
 
     // should not compile - D1 violates the dependencies graph in the source composite, since F depends on D1. Replacing D1 for D2 would violate that dependency.
-    //val n7: &[A with $[D2]] = compose[A with D1 with F]
+    illTyped(
+      """
+        val n7: &[A with $[D2]] = compose[A with D1 with F]
+      """, ".*Some placeholders cannot be applied: List\\(Placeholder org.cloudio.morpheus.test.samples.D2 would replace org.cloudio.morpheus.test.samples.D1 on which fragments Set\\(org.cloudio.morpheus.test.samples.F\\) depend\\).*")
+
 
     // should not compile - D1 violates the dependencies graph in the source composite, since F depends on D1. Replacing D1 for D2 would violate that dependency.
-    //val n8: &[A with $[D2]] = compose[A with D1 with E with F with G]
+    illTyped(
+      """
+        val n8: &[A with $[D2]] = compose[A with D1 with E with F with G]
+      """, ".*Some placeholders cannot be applied: List\\(Fragments Set\\(org.cloudio.morpheus.test.samples.E, org.cloudio.morpheus.test.samples.G\\) may be in conflict with placeholder org.cloudio.morpheus.test.samples.D2\\).*")
   }
 
 
   @Test
   def testBasicOptionalPlaceholders(): Unit = {
     // should not compile
-    //val err1: &[A with /?[$[E]]] = compose[A]
+    illTyped(
+      """
+        val err1: &[A with /?[$[E]]] = compose[A]
+      """, ".*Unsatisfied placeholder org.cloudio.morpheus.test.samples.E dependencies.*")
 
     val c1: &[/?[$[A]]] = compose[/?[A]]
     assertEquals(AltMappings(
@@ -504,8 +569,10 @@ class CompositeMappingTests {
       c1.altMappings)
 
     // should not compile, L frapper wraps D1 and replacing D1 for any D could break the dependency
-    //val n1: &[$[D]] = compose[D1 with L]
-
+    illTyped(
+      """
+        val n1: &[$[D]] = compose[D1 with L]
+      """, ".*Some placeholders cannot be applied: List\\(Fragments Set\\(org.cloudio.morpheus.test.samples.L\\) may be in conflict with placeholder org.cloudio.morpheus.test.samples.D\\).*")
 
     val c2: &[A with $[D]] = compose[A with D1]
     assertEquals(AltMappings(
@@ -514,8 +581,12 @@ class CompositeMappingTests {
       c2.altMappings)
 
     // should not compile since the placeholder is a dimension which would replace D1 referenced by F
-    //val n1: &[A with $[D]] = compose[A with D1 with F] // F -> D1
-
+    illTyped(
+      """
+        val n1: &[A with $[D] with FF] = compose[A with D1 with F with FF] // F -> D1
+        val k1 = *(n1, single[D2])
+        k1.!.onFF(1)
+      """, ".*Some placeholders cannot be applied: List\\(Fragments Set\\(org.cloudio.morpheus.test.samples.F\\) may be in conflict with placeholder org.cloudio.morpheus.test.samples.D\\).*")
   }
 
 
@@ -557,9 +628,15 @@ class CompositeMappingTests {
     assertEquals("A", bc.onB("A"))
     assertEquals("AA", bc.onC("A"))
 
-    val c4: &[A or (B with $[C]) or $[D1]] = compose[A or B]
+    illTyped(
+      """
+        val c4_err: &[A or (B with $[C]) or $[D1]] = compose[A or B]
+      """, ".*Target alternative template List\\(\\$\\[D1\\], A\\) contains antagonists List\\(\\(\\$\\[D1\\],A\\), \\(A,\\$\\[D1\\]\\)\\).*" +
+        ".*Target alternative template List\\(\\$\\[D1\\], B\\) contains antagonists List\\(\\(\\$\\[D1\\],B\\), \\(B,\\$\\[D1\\]\\)\\).*")
+
+    val c4: &[A or (B with $[C]) or ($[D1] with (A or B))] = compose[A or B]
     val d4 = *(c4, single[C], single[D1])
-    val d4_x: MorphKernel[A or (B with C) or D1] = *(c4, single[C], single[D1])
+    val d4_x: MorphKernel[A or (B with C) or (D1 with (A or B))] = *(c4, single[C], single[D1])
     val p4 = d4.make
     assertEquals(1, asMorphOf[A](d4).onA(1))
     assertEquals("AA", asMorphOf[B with C](d4).onC("A"))
@@ -626,7 +703,10 @@ class CompositeMappingTests {
     val c0_1: &[ident[({type i = D@dimension @wrapper})#i]] = compose[A with H with B with C with D1 with I]
     val c0_1_errKern = compose[A with H with B with C with D1]
     // it should not compile since there is no fragment implementing D and being annotated with both @dimension and @wrapper
-    //val c0_1_err: &[ident[({type i = D@dimension @wrapper})#i]] = c0_1_errKern
+    illTyped(
+      """
+        val c0_1_err: &[ident[({type i = D@dimension @wrapper})#i]] = c0_1_errKern
+      """, ".*Some target annotations not found in the source alt.*")
     val c0_1_ok: &[ident[({type fd = D@fragment})#fd]] = c0_1_errKern
 
     val c1: &[$[({type wd = D@dimension})#wd]] = compose[A with H with B with C with D1 with I]
@@ -669,12 +749,12 @@ class CompositeMappingTests {
 
   @Test
   def testMoreDimensionWrapperPlaceholders(): Unit = {
-//    val c0: &[$[$[({type wd = D@dimension @wrapper})#wd]]] = compose[A with H with B with C with D1]
-//    val d0 = *(c0, single[D2], single[I], single[J])
-//    val p0 = d0.make
-//    println(p0.myAlternative)
-//    assertEquals(120, p0.onD(3))
-//    assertEquals(1200, p0.onJ(3))
+    //    val c0: &[$[$[({type wd = D@dimension @wrapper})#wd]]] = compose[A with H with B with C with D1]
+    //    val d0 = *(c0, single[D2], single[I], single[J])
+    //    val p0 = d0.make
+    //    println(p0.myAlternative)
+    //    assertEquals(120, p0.onD(3))
+    //    assertEquals(1200, p0.onJ(3))
   }
 
   def testAbstractFragmentWrapperPlaceholder(): Unit = {
@@ -686,10 +766,13 @@ class CompositeMappingTests {
   @Test
   def testNoHiddenFragRefTotalConformance(): Unit = {
     // should not compile since B becomes hidden in r0
-    //    val c0 = compose[A with B]
-    //    val r0: &![A] = c0
-    //    val c1 = *(r0)
-    //    val r1: &[A with $[H]] = c1
+    illTyped(
+      """
+      val c0 = compose[A with B]
+      val r0: &![A] = c0
+      val c1 = *(r0)
+      val r1: &[A with $[H]] = c1
+      """, ".*Some hidden source fragments in the target alternative template: org.cloudio.morpheus.test.samples.B.*")
 
     // only {A} alternative is mapped to r2, thus no hidden fragments in r2 mappings
     val c2 = compose[A or B]
@@ -701,8 +784,11 @@ class CompositeMappingTests {
   @Test
   def testNoHiddenFragRefPartialConformance(): Unit = {
     // should not compile since H becomes hidden in r0
-    //    val c0 = compose[A with H]
-    //    val r0: ~&![A or B] = c0
+    illTyped(
+      """
+        val c0 = compose[A with H]
+        val r0: ~&![A or B] = c0
+      """, ".*Some hidden source fragments in the target alternative template: org.cloudio.morpheus.test.samples.H.*")
 
     // only {A} alternative is mapped to r2, thus no hidden fragments in r2 mappings
     val c2 = compose[A]
