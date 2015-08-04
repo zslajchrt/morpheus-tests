@@ -1279,8 +1279,11 @@ class EssentialCasesTests {
         asMorphOf[EntityB with PingLogger](compositeWithAlts)
       """)
 
-    // Should not compile because of the LUB is not same as the composite type (there are two alternatives)
-    //asMorphOf[EntityB with /?[XMLRenderer]](compositeWithAlts)
+    // Should not compile because the LUB is not same as the composite type (there are two alternatives)
+    illTyped(
+      """
+        asMorphOf[EntityB with /?[XMLRenderer]](compositeWithAlts)
+      """)
   }
 
   @Test
