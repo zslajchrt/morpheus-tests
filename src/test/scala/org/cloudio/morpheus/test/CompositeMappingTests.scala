@@ -814,4 +814,13 @@ class CompositeMappingTests {
     assertEquals("aaa", *(r5, single[B]).~.onB("aaa"))
   }
 
+  @Test
+  def testPlaceholderWithDepsToOneAltOfSrcType(): Unit = {
+    val k = singleton[(A or B) with WTotal]
+    val r: &[$[C]] = k
+    val d = *(r, single[C])
+    // the alternative must not contain A
+    assertFalse(d.!.isInstanceOf[A])
+  }
+
 }
