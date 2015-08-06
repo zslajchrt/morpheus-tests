@@ -523,29 +523,29 @@ class AdvancedTests {
     illTyped(
       """
         val exist0 = compose[D1 with WPartial]
-      """, ".*Source LUB.*")
+      """)
 
     illTyped(
       """
         val incl0 = compose[D1 with WTotal]
-      """, ".*Source LUB.*")
+      """)
 
     val exist1 = compose[A with WPartial]
 
     illTyped(
       """
         val incl1 = compose[A with WTotal]
-      """, ".*Source LUB.*")
+      """)
 
     illTyped(
       """
         val exist2 = compose[A with B with WPartial]
-      """, ".*Target alternative template List\\(A, B\\) contains antagonists List\\(\\(A,B\\), \\(B,A\\)\\).*")
+      """)
 
     illTyped(
       """
         val incl2 = compose[A with B with WTotal]
-      """, ".*Target alternative template List\\(A, B\\) contains antagonists List\\(\\(A,B\\), \\(B,A\\)\\).*")
+      """)
 
     val exist3 = compose[(A or B) with WPartial]
     val incl3 = compose[(A or B) with WTotal]
@@ -565,12 +565,12 @@ class AdvancedTests {
     illTyped(
       """
         val existRef: ~&[A or B] = c1
-      """, ".*Target alternative template List\\(A, B\\) contains antagonists List\\(\\(A,B\\), \\(B,A\\)\\).*")
+      """)
 
     illTyped(
       """
         val inclRef: &[A or B] = existInst0 // this should not compile: incompatible conformance levels
-      """, ".*Source LUB.*")
+      """)
   }
 
 
@@ -700,7 +700,7 @@ class AdvancedTests {
     illTyped(
       """
         val mErr = compose[SBoolean with SWrapper].~
-      """, ".*No fragment implementing org.cloudio.morpheus.test.samples.S\\[X\\] found for wrapper org.cloudio.morpheus.test.samples.SWrapper.*")
+      """)
 
 
     val m2 = compose[TImpl with TWrapper].~
