@@ -15,6 +15,34 @@ import org.morpheus.test.illTyped
 */
 class AdvancedTests {
 
+//  @Test
+//  def testReferenceChain(): Unit = {
+//
+//    // Construct the forward chain
+//
+//    val x1 = singleton[X1]
+//    val x12: &[$[X2]] = x1
+//    val x2 = *(x12, single[X2])
+//    val x23: &[$[X3]] = x2
+//    val x3 = *(x23, single[X3])
+//    val x34: &[$[X4]] = x3
+//    val x4 = *(x34, single[X4])
+//    val x54: &[$[X5]] = x4
+//    val x5 = *(x54, single[X5])
+//
+//    x5.!.onX5("abc")
+//
+//    // Construct the backward chain
+//
+//    val x4r: &[X4] = x5
+//    val x3r: &[X3] = *(x4r)
+//    val x2r: &[X2] = *(x3r)
+//    val x1r: &[X1] = *(x2r)
+//    val x1dr = *(x1r)
+//
+//    assertEquals(4, x1dr.!.v1)
+//  }
+
   @Test
   def testComplexPlaceholder(): Unit = {
     val k1 = singleton[A with B]

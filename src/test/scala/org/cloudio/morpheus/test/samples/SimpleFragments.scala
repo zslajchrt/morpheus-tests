@@ -78,6 +78,7 @@ trait D {
 @fragment
 trait D1 extends D {
   override def onD(l: Long): Long = l + l
+
   def onD1(l: Long): Long = l + l + l
 }
 
@@ -227,7 +228,8 @@ trait R {
 }
 
 
-@ignore @dimension
+@ignore
+@dimension
 trait S[X] {
 
   def getX: X
@@ -267,7 +269,8 @@ trait SWrapper extends S[Int] {
   abstract override def getX = 2 * super.getX
 }
 
-@ignore @dimension
+@ignore
+@dimension
 trait T {
 
   type X
@@ -350,16 +353,16 @@ trait WTotal {
 
   def getWTotalRef: &[WTotal with (A or B)] = {
     &&(this)
-//    import org.morpheus._
-//    import org.morpheus.Morpheus._
-//    val ref = mirror(this) match {
-//      case None => None
-//      case Some(m) =>
-//        val fh = m.kernel.fragmentHolder[WTotal]
-//        val depsMaps = fh.get.fragment.depsMappings.get
-//        Some(new &(m.kernel.asInstanceOf[MorphKernel[Any]], depsMaps))
-//    }
-//    null
+    //    import org.morpheus._
+    //    import org.morpheus.Morpheus._
+    //    val ref = mirror(this) match {
+    //      case None => None
+    //      case Some(m) =>
+    //        val fh = m.kernel.fragmentHolder[WTotal]
+    //        val depsMaps = fh.get.fragment.depsMappings.get
+    //        Some(new &(m.kernel.asInstanceOf[MorphKernel[Any]], depsMaps))
+    //    }
+    //    null
   }
 }
 
@@ -370,7 +373,8 @@ trait X {
   def onX(a: String) = onB("X" + a)
 }
 
-@fragment @wrapper
+@fragment
+@wrapper
 trait XW1 extends X {
   this: B =>
 
@@ -392,7 +396,7 @@ trait Green {
 
 @fragment
 trait RedEx {
- this: Red =>
+  this: Red =>
 
 }
 
@@ -478,4 +482,79 @@ object CourtConfig {
 @fragment
 trait Court extends CourtConfig {
   var playedGames: Int = 0
+}
+
+@dimension
+trait X1 {
+  var v1: Int
+
+  def onX1(i: Int): Unit
+}
+
+@fragment
+trait X1Imp extends X1 {
+
+  override var v1: Int = _
+
+  def onX1(i: Int): Unit = {
+    v1 = i
+  }
+}
+
+@dimension
+trait X2 {
+  def onX2(s: String): Unit
+}
+
+
+@fragment
+trait X2Imp extends X2 {
+  this: X1 =>
+
+  def onX2(s: String): Unit = {
+    onX1(s.length)
+  }
+}
+
+@dimension
+trait X3 {
+  def onX3(s: String, i: Int): Unit
+}
+
+@fragment
+trait X3Imp extends X3 {
+  this: X2 =>
+
+  def onX3(s: String, i: Int): Unit = {
+    onX2(s"$s$i")
+  }
+
+}
+
+@dimension
+trait X4 {
+  def onX4(s: String, i: Int, b: Boolean): Unit
+}
+
+@fragment
+trait X4Imp extends X4 {
+  this: X3 =>
+
+  def onX4(s: String, i: Int, b: Boolean): Unit = {
+    onX3(s, 2 * i)
+  }
+}
+
+@dimension
+trait X5 {
+  def onX5(s: String): Unit
+}
+
+@fragment
+trait X5Imp extends X5 {
+  this: X4 =>
+
+  def onX5(s: String): Unit = {
+    onX4(s, s.length, s.isEmpty)
+  }
 }
