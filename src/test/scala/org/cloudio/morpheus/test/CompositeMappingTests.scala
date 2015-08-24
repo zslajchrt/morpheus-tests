@@ -821,4 +821,20 @@ class CompositeMappingTests {
     assertFalse(d.!.isInstanceOf[A])
   }
 
+  @Test
+  def testMutualReferencingPlaceholders(): Unit = {
+    val k = compose[A with B]
+    val r: &[$[Y1 with Y2]] = k
+    val k2 = *(r, single[Y1], single[Y2])
+    k2.!.onY2()
+  }
+
+  @Test
+  def testMutualReferencingPlaceholdersByDim(): Unit = {
+    val k = compose[A with B]
+    val r: &[$[Y3 with Y4]] = k
+    val k2 = *(r, single[Y3], single[Y4])
+    k2.!.onY4()
+  }
+
 }

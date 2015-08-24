@@ -558,3 +558,48 @@ trait X5Imp extends X5 {
     onX4(s, s.length, s.isEmpty)
   }
 }
+
+
+@fragment
+trait Y1 {
+  this: A with Y2 =>
+
+  def onY1(): Unit = {
+    onA(1)
+  }
+}
+
+@fragment
+trait Y2 {
+  this: B with Y1 =>
+  def onY2(): Unit = {
+    onB("x")
+    onY1()
+  }
+}
+
+trait Y3Dim {
+  def onY3(): Unit
+}
+
+trait Y4Dim {
+  def onY4(): Unit
+}
+
+@fragment
+trait Y3 extends Y3Dim {
+  this: A with Y4Dim =>
+
+  def onY3(): Unit = {
+    onA(1)
+  }
+}
+
+@fragment
+trait Y4 extends Y4Dim {
+  this: B with Y3Dim =>
+  def onY4(): Unit = {
+    onB("x")
+    onY3()
+  }
+}
