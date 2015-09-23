@@ -378,7 +378,10 @@ trait X {
 trait XW1 extends X {
   this: B =>
 
-  override def onX(a: String) = super.onX("XW1" + a)
+  override def onX(a: String) = {
+    val aa = onB(a)
+    super.onX("XW1" + aa)
+  }
 }
 
 @fragment
