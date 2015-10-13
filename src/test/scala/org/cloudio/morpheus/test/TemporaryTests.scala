@@ -29,8 +29,24 @@ class TemporaryTests {
     def update(t: &[T]): Unit
   }
 
+  class Aaa(x: PartialFunction[Any, Unit]) {
+    def bbb(a: Any): Unit = {
+      if (x.isDefinedAt(a)) {
+        x(a)
+      } else {
+        ()
+      }
+    }
+  }
+
   @Test
   def testServiceChain(): Unit = {
+
+    val aaa = new Aaa({
+      case i: Int => println(i)
+    })
+    aaa.bbb()
+
 
     implicit val f = new CovFunctor[Finder] {
 

@@ -14,6 +14,12 @@ import org.morpheus.test.illTyped
 class AdditionalTests {
 
     @Test
+    def testModelWithDimension(): Unit = {
+      implicit val dFrag = external[D](null)
+      val c = compose[D]
+    }
+
+    @Test
     def testCompleteOneAlternative(): Unit = {
       val ref1: &[C with D] = compose[A with B with C with D1 with I]
       val ci1 = *(ref1)
