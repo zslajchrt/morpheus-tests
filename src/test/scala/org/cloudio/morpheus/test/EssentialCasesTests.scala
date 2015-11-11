@@ -506,53 +506,6 @@ class EssentialCasesTests {
   }
 
   @Test
-  def testProxyImplicits(): Unit = {
-    implicit val pongConfig = frag[Pong, PongConfig](new PongConfig {
-      val maxReturns: Int = 10
-    })
-    val pingPong = singleton[Ping with Pong]
-    import pingPong.proxies._
-
-    // it's ok if it compiles
-    val ping = implicitly[Ping]
-    val pong = implicitly[Pong]
-  }
-
-  @Test
-  def testGlean() {
-    // todo: when composing an abstract composite the composite model type should be flat
-
-    val ping = singleton_?[Ping]
-    import ping.proxies._
-
-    val pong = {
-      implicit val pongConfig = frag[Pong, PongConfig](new PongConfig {
-        val maxReturns: Int = 10
-      })
-      singleton_?[Pong]
-    }
-    import pong.proxies._
-
-    val trainers = singleton_?[PingTrainer with PongTrainer]
-    import trainers.proxies._
-
-    val team = glean[PingTrainer with PongTrainer with Ping with Pong]
-
-    val teamMorph: PingTrainer with PongTrainer = team.make
-    assertTrue(teamMorph.pingReady())
-    assertTrue(teamMorph.pongReady())
-
-    val pingPongMorph: Ping with Pong = glean[Ping with Pong].make
-    pingPongMorph.ping(0)
-
-    val pingReady = teamMorph.pingReady()
-    val pongReady = teamMorph.pingReady()
-    assertFalse(pingReady)
-    assertFalse(pongReady)
-
-  }
-
-  @Test
   def testVolatilePolymorphism(): Unit = {
     implicit val mutConfig = single[MutableFragment, MutableFragmentConfig](MutableFragmentConfig())
     val animal: Animal = compose[Animal with MutableFragment].make
