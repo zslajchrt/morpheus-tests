@@ -73,8 +73,15 @@ class AdvancedTests {
   @Test
   def testMoreSameFragmentsInSourceMorphType(): Unit = {
     val k1 = singleton[(A with D1) or (A with D2) or B]
+
+    val ref1: &[A with D1] = k1
+    *(ref1).!
+    val ref2: &[A with D2] = k1
+    *(ref2).!
+
     val a1 = asMorphOf[A with D1](k1.!)
     val a2 = asMorphOf[A with D2](k1.!)
+
 
     a1.onA(1)
     assertEquals(1, a1.xx)
