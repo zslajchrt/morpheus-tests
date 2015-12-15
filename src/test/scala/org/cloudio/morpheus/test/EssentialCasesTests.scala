@@ -609,6 +609,21 @@ class EssentialCasesTests {
     assertNotSame(pong1, pong2)
   }
 
+  @Test
+  def testSingletonWithNonSingletonFragmentReInit(): Unit = {
+    var maxReturnsVar = 1
+
+    implicit val pongCfg = frag[Pong, PongConfig](new PongConfig {
+      override val maxReturns: Int = maxReturnsVar
+    })
+    val model = singleton[Ping with Pong]
+
+    assertEquals(1, model.~.maxReturns)
+
+    maxReturnsVar = 2
+    model.~.remorph
+    assertEquals(2, model.~.maxReturns)
+  }
 
   @Test
   def testComplexStructure(): Unit = {
